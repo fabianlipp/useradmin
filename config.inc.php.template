@@ -1,0 +1,13 @@
+<?php
+
+error_reporting(E_ALL);
+
+define('LDAP_SERVER', 'ldaps://example.com/');
+define('BASE_DN', 'dc=example,dc=com');
+define('GROUP_DN', 'ou=Groups,' . BASE_DN);
+define('USER_DN', 'ou=People,' . BASE_DN);
+
+define('PAGETITLE', 'example.com User Admin');
+
+
+?>
