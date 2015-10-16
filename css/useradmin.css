@@ -42,8 +42,17 @@ table.sortable tr th {
   cursor: pointer;
 }
 
-.table > tbody > tr > td[colspan] {
-  /*padding: 0;*/
-  border-top: none;
+td > ul {
+  margin-bottom: 0;
+  padding-left: 25px;
 }
+
+th.lblGruppen {
+  vertical-align: top;
+}
+
+/*.table > tbody > tr > td[colspan] {
+  /*padding: 0;*/
+/*  border-top: none;
+}*/
 

@@ -7,30 +7,54 @@ class Group {
   var $cn;
   var $description;
 
-  public static function readGroups($ldapconn, $baseDn) {
-    $filter_groups = "(objectclass=groupOfNames)";
+  const FILTER_GROUPS = "(objectclass=groupOfNames)";
+  const FILTER_GROUP_OUS = "(objectclass=organizationalUnit)";
 
+  public static function readGroups($ldapconn, $baseDn) {
     $groups = array();
-    $search = ldap_list($ldapconn, $baseDn, $filter_groups,
+    $search = ldap_list($ldapconn, $baseDn, Group::FILTER_GROUPS,
         array("cn", "description"));
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
       do {
         $newGroup = new Group();
         $newGroup->dn = ldap_get_dn($ldapconn, $entry);
-        $vals = ldap_get_values($ldapconn, $entry, "cn");
-        if ($vals['count'] == 1) {
-          $newGroup->cn = $vals[0];
+
+        $att = ldap_get_attributes($ldapconn, $entry);
+        if (isset($att['cn']) && $att['cn']['count'] == 1) {
+          $newGroup->cn = $att['cn'][0];
         }
         $vals = ldap_get_values($ldapconn, $entry, "description");
-        if ($vals['count'] == 1) {
-          $newGroup->description = $vals[0];
+        if (isset($att['description']) && $att['description']['count'] == 1) {
+          $newGroup->description = $att['description'][0];
         }
 
         $groups[] = $newGroup;
       } while ($entry = ldap_next_entry($ldapconn, $entry));
     }
     return $groups;
+  }
+
+  public static function loadGroup($ldapconn, $dn) {
+    $search = ldap_read($ldapconn, $dn, Group::FILTER_GROUPS,
+        array("cn", "description"));
+    if (ldap_count_entries($ldapconn, $search) > 0) {
+      $entry = ldap_first_entry($ldapconn, $search);
+
+      $newGroup = new Group();
+      $newGroup->dn = ldap_get_dn($ldapconn, $entry);
+
+      $att = ldap_get_attributes($ldapconn, $entry);
+      if (isset($att['cn']) && $att['cn']['count'] == 1) {
+        $newGroup->cn = $att['cn'][0];
+      }
+      $vals = ldap_get_values($ldapconn, $entry, "description");
+      if (isset($att['description']) && $att['description']['count'] == 1) {
+        $newGroup->description = $att['description'][0];
+      }
+
+      return $newGroup;
+    }
   }
 }
 
@@ -42,10 +66,8 @@ class GroupOu {
   var $groups;
 
   public static function readGroupOus($ldapconn) {
-    $filter_ou = "(objectclass=organizationalUnit)";
-
     $ous = array();
-    $search = ldap_list($ldapconn, GROUP_DN, $filter_ou,
+    $search = ldap_list($ldapconn, GROUP_DN, FILTER_GROUP_OUS,
         array("ou", "description"));
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);

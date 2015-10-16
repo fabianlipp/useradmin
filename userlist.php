@@ -10,7 +10,7 @@ $users = User::readUsers($ldapconn);
 
 ldap_close($ldapconn);
 
-define(USE_ANGULAR, true);
+define('USE_ANGULAR', true);
 
 ?>
 <?php include('html_head.inc.php'); ?>
@@ -41,20 +41,35 @@ define(USE_ANGULAR, true);
         <tr>
           <th ng-click="list.sortClick('cn')">
             cn
-            <span ng-show="list.sortField === 'cn'" class="fa fa-caret-down" ng-class="{'fa-caret-down': !list.sortReverse, 'fa-caret-up': list.sortReverse}" />
+            <span ng-show="list.sortField === 'cn'"
+                class="fa fa-caret-down"
+                ng-class="{'fa-caret-down': !list.sortReverse,
+                  'fa-caret-up': list.sortReverse}"
+            />
           </th>
           <th ng-click="list.sortClick('displayName')">
             Name
-            <span ng-show="list.sortField === 'displayName'" class="fa fa-caret-down" ng-class="{'fa-caret-down': !list.sortReverse, 'fa-caret-up': list.sortReverse}" />
+            <span ng-show="list.sortField === 'displayName'"
+                class="fa fa-caret-down"
+                ng-class="{'fa-caret-down': !list.sortReverse,
+                  'fa-caret-up': list.sortReverse}"
+            />
           </th>
           <th ng-click="list.sortClick('mail')">
             E-Mail
-            <span ng-show="list.sortField === 'mail'" class="fa fa-caret-down" ng-class="{'fa-caret-down': !list.sortReverse, 'fa-caret-up': list.sortReverse}" />
+            <span ng-show="list.sortField === 'mail'"
+                class="fa fa-caret-down"
+                ng-class="{'fa-caret-down': !list.sortReverse,
+                  'fa-caret-up': list.sortReverse}"
+            />
           </th>
         </tr>
 
-        <tbody ng-repeat="user in list.userData | orderBy:list.sortType:list.sortReverse | filter:list.searchText">
-        <tr ng-click="list.expandClick(user.userId)">
+        <tr ng-repeat-start="user in list.userData
+              | orderBy:list.sortType:list.sortReverse
+              | filter:list.searchText"
+            ng-if="!user.expanded"
+            ng-click="list.expandClick(user.userId)">
           <td>{{user.cn}}</td>
           <td>{{user.displayName}}</td>
           <td>{{user.mail}}</td>
@@ -62,12 +77,41 @@ define(USE_ANGULAR, true);
           <td>{{user.detailLoaded}}</td>-->
         </tr>
 
-        <tr ng-if="user.expanded">
+        <tr ng-repeat-end="" ng-if="user.expanded">
           <td colspan="3">
-            abc
+            <div class="well">
+              <a href="#" class="close" aria-label="close"
+                  ng-click="list.expandClick(user.userId)">
+                &times;
+              </a>
+              <table>
+                <tr>
+                  <th>cn:</th>
+                  <td>{{user.cn}}</td>
+                </tr>
+                <tr>
+                  <th>Name:</th>
+                  <td>{{user.displayName}}</td>
+                </tr>
+                <tr>
+                  <th>E-Mail:</th>
+                  <td>{{user.mail}}</td>
+                </tr>
+                <tr>
+                  <th class="lblGruppen">Gruppen:</th>
+                  <td>
+                    <ul>
+                      <li ng-repeat="group in user.details.groups">
+                        {{group.cn}}
+                        <span class="small">({{group.description}})</span>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </td>
         </tr>
-        </tbody>
       </table>
 
 <?php /*      <ul class="list-group">
@@ -99,6 +143,7 @@ define(USE_ANGULAR, true);
 <?php } ?>
 </ul> */ ?>
 
+      <!-- DEBUG -->
       <p><pre><?php print_r($users); ?></pre></p>
     </div>
 

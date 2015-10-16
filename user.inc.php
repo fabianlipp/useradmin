@@ -1,50 +1,103 @@
 <?php
 
 require_once('config.inc.php');
+require_once('groupOu.inc.php');
 
 class User {
   var $dn;
   var $cn;
   var $mail;
   var $displayName;
-  var $groups;
+  private $group_dns;
+  var $groups = null;
+
+  const FILTER_USERS = "(objectclass=inetOrgPerson)";
 
   public static function readUsers($ldapconn) {
-    $filter_users = "(objectclass=inetOrgPerson)";
 
     $users = array();
-    $search = ldap_list($ldapconn, USER_DN, $filter_users,
+    $search = ldap_list($ldapconn, USER_DN, User::FILTER_USERS,
         array("cn", "mail", "displayName", "memberOf"));
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
       do {
+        // Generate object and store dn
         $newUser = new User();
         $newUser->dn = ldap_get_dn($ldapconn, $entry);
-        $vals = ldap_get_values($ldapconn, $entry, "cn");
-        if ($vals['count'] == 1) {
-          $newUser->cn = $vals[0];
-        }
-        $vals = ldap_get_values($ldapconn, $entry, "mail");
-        if ($vals['count'] == 1) {
-          $newUser->mail = $vals[0];
-        }
-        $vals = ldap_get_values($ldapconn, $entry, "displayName");
-        if ($vals['count'] == 1) {
-          $newUser->displayName = $vals[0];
-        }
-        $vals = ldap_get_values($ldapconn, $entry, "memberOf");
-        $groups = [];
-        for ($i = 0; $i < $vals['count']; $i++) {
-          $groups[] = $vals[$i];
-        }
-        $newUser->groups = $groups;
 
+        // Load attributes
+        $att = ldap_get_attributes($ldapconn, $entry);
+
+        if (isset($att['cn']) && $att['cn']['count'] == 1) {
+          $newUser->cn = $att['cn'][0];
+        }
+
+        if (isset($att['mail']) && $att['mail']['count'] == 1) {
+          $newUser->mail = $att['mail'][0];
+        }
+
+        if (isset($att['displayName']) && $att['displayName']['count'] == 1) {
+          $newUser->displayName = $att['displayName'][0];
+        }
+
+        $groups = [];
+        if (isset($att['memberOf'])) {
+          for ($i = 0; $i < $att['memberOf']['count']; $i++) {
+            $groups[] = $att['memberOf'][$i];
+          }
+        }
+        $newUser->group_dns = $groups;
+
+        // Store user into array
         $users[] = $newUser;
       } while ($entry = ldap_next_entry($ldapconn, $entry));
     }
     return $users;
   }
 
+  public static function readUser($ldapconn, $dn) {
+    $search = ldap_read($ldapconn, $dn, USER::FILTER_USERS,
+        array("cn", "mail", "displayName", "memberOf"));
+    if (ldap_count_entries($ldapconn, $search) > 0) {
+      $entry = ldap_first_entry($ldapconn, $search);
+
+      $newUser = new User();
+      $newUser->dn = ldap_get_dn($ldapconn, $entry);
+
+      // Load attributes
+      $att = ldap_get_attributes($ldapconn, $entry);
+
+      if (isset($att['cn']) && $att['cn']['count'] == 1) {
+        $newUser->cn = $att['cn'][0];
+      }
+
+      if (isset($att['mail']) && $att['mail']['count'] == 1) {
+        $newUser->mail = $att['mail'][0];
+      }
+
+      if (isset($att['displayName']) && $att['displayName']['count'] == 1) {
+        $newUser->displayName = $att['displayName'][0];
+      }
+
+      $groups = [];
+      if (isset($att['memberOf'])) {
+        for ($i = 0; $i < $att['memberOf']['count']; $i++) {
+          $groups[] = $att['memberOf'][$i];
+        }
+      }
+      $newUser->group_dns = $groups;
+
+      return $newUser;
+    }
+
+  }
+
+  public function loadGroupInformation($ldapconn) {
+    $this->groups = array();
+    foreach ($this->group_dns as $dn) {
+      $this->groups[] = Group::loadGroup($ldapconn, $dn);
+    }
+  }
 }
 
 
