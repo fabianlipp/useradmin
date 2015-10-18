@@ -10,4 +10,6 @@ LDAP server.
 * js/jquery.min.js v1.11.3
 * font-awesome/ (complete directory) v4.4.0
 * js/angular.min.js v1.4.7
+* js/xeditable.min.js v0.1.8
+* css/xeditable.css v0.1.8
 

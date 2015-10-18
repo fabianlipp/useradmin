@@ -14,7 +14,7 @@ $dn = $_GET['dn'];
 
 $ldapconn = ldap_bind_session();
 $user = User::readUser($ldapconn, $dn);
-$user->loadGroupInformation($ldapconn);
+$user->loadGroupInformation();
 ldap_close($ldapconn);
 
 echo json_encode($user);

@@ -38,7 +38,7 @@ body {
   border-top-right-radius: 0;
 }
 
-table.sortable tr th {
+table.sortable > tr > th {
   cursor: pointer;
 }
 
@@ -49,6 +49,10 @@ td > ul {
 
 th.lblGruppen {
   vertical-align: top;
+}
+
+span.fieldEditBtn {
+  cursor: pointer;
 }
 
 /*.table > tbody > tr > td[colspan] {

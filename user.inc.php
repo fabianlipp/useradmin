@@ -11,10 +11,11 @@ class User {
   private $group_dns;
   var $groups = null;
 
+  private $ldapconn;
+
   const FILTER_USERS = "(objectclass=inetOrgPerson)";
 
   public static function readUsers($ldapconn) {
-
     $users = array();
     $search = ldap_list($ldapconn, USER_DN, User::FILTER_USERS,
         array("cn", "mail", "displayName", "memberOf"));
@@ -49,11 +50,14 @@ class User {
         $newUser->group_dns = $groups;
 
         // Store user into array
+        $newUser->ldapconn = $ldapconn;
         $users[] = $newUser;
       } while ($entry = ldap_next_entry($ldapconn, $entry));
     }
     return $users;
   }
+
+
 
   public static function readUser($ldapconn, $dn) {
     $search = ldap_read($ldapconn, $dn, USER::FILTER_USERS,
@@ -87,15 +91,30 @@ class User {
       }
       $newUser->group_dns = $groups;
 
+      $newUser->ldapconn = $ldapconn;
       return $newUser;
     }
-
   }
 
-  public function loadGroupInformation($ldapconn) {
+
+
+  public function loadGroupInformation() {
     $this->groups = array();
     foreach ($this->group_dns as $dn) {
-      $this->groups[] = Group::loadGroup($ldapconn, $dn);
+      $this->groups[] = Group::loadGroup($this->ldapconn, $dn);
+    }
+  }
+
+
+
+  public function changeMail($newMail) {
+    $entry = array();
+    $entry["mail"] = $newMail;
+    if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
+      return false;
+    } else {
+      $this->mail = $newMail;
+      return true;
     }
   }
 }

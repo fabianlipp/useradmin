@@ -95,7 +95,16 @@ define('USE_ANGULAR', true);
                 </tr>
                 <tr>
                   <th>E-Mail:</th>
-                  <td>{{user.mail}}</td>
+                  <td>
+                    <span editable-text="user.mail"
+                        e-form="mailBtnForm"
+                        onbeforesave="list.updateMail($data, user)">
+                      {{user.mail}}
+                    </span>
+                    <span class="glyphicon glyphicon-pencil fieldEditBtn"
+                        ng-click="mailBtnForm.$show()"
+                        ng-hide="mailBtnForm.$visible" />
+                  </td>
                 </tr>
                 <tr>
                   <th class="lblGruppen">Gruppen:</th>

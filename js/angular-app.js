@@ -1,5 +1,9 @@
 (function(){
-  var userlistApp = angular.module('userlistApp', ['ngAnimate']);
+  var userlistApp = angular.module('userlistApp', ['ngAnimate', 'xeditable']);
+
+  userlistApp.run(function(editableOptions) {
+    editableOptions.theme = 'bs3';
+  });
 
   userlistApp.controller('ListController', function($http) {
     this.sortField = 'cn';
@@ -41,6 +45,16 @@
 
     this.formatJson = function(json_str) {
       return JSON.stringify(json_str, undefined, 2);
+    }
+
+    this.updateMail = function(data, user) {
+      $http.post('changeUserDetail.php',
+          {'dn': user.dn,
+            'newMail': data})
+          .success(function() {
+
+            console.log("HTTP success");
+          });
     }
   });
 
