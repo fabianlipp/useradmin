@@ -8,7 +8,6 @@ class Group {
   var $description;
 
   const FILTER_GROUPS = "(objectclass=groupOfNames)";
-  const FILTER_GROUP_OUS = "(objectclass=organizationalUnit)";
 
   public static function readGroups($ldapconn, $baseDn) {
     $groups = array();
@@ -65,9 +64,11 @@ class GroupOu {
 
   var $groups;
 
+  const FILTER_GROUP_OUS = "(objectclass=organizationalUnit)";
+
   public static function readGroupOus($ldapconn) {
     $ous = array();
-    $search = ldap_list($ldapconn, GROUP_DN, FILTER_GROUP_OUS,
+    $search = ldap_list($ldapconn, GROUP_DN, GroupOu::FILTER_GROUP_OUS,
         array("ou", "description"));
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
