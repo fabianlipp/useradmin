@@ -47,15 +47,37 @@
       return JSON.stringify(json_str, undefined, 2);
     }
 
-    this.updateMail = function(data, user) {
+    this.updateMail = function(data, form, user) {
+      form.loading = true;
+      form.success = false;
+      form.fail = false;
       $http.post('changeUserDetail.php',
           {'dn': user.dn,
             'newMail': data})
-          .success(function() {
-
-            console.log("HTTP success");
+          .then(function(response) {
+            // success
+            form.loading = false;
+            form.success = true;
+            if (typeof response.data.mail != 'undefined') {
+              user.mail = response.data.mail;
+            }
+          }, function(response) {
+            // error
+            form.loading = false;
+            form.fail = true;
+            if (typeof response.data.mail != 'undefined') {
+              user.mail = response.data.mail;
+            }
           });
+      return false;
+    }
+
+    this.resetEditableForm = function(form) {
+        form.loading = false;
+        form.success = false;
+        form.fail = false;
     }
   });
+
 
 })();

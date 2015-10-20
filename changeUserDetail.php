@@ -19,6 +19,8 @@ $dn = $request['dn'];
 $ldapconn = ldap_bind_session();
 $user = User::readUser($ldapconn, $dn);
 
+$retval = array();
+
 // check which field should be changed
 if (!empty($request['newMail'])) {
   $newMail = $request['newMail'];
@@ -27,13 +29,16 @@ if (!empty($request['newMail'])) {
     http_response_code(200);
   } else {
     http_response_code(500);
-    die("Could not write change to LDAP directory");
+    $retval["message"] = "Could not write change to LDAP directory";
   }
 } else {
   http_response_code(400);
-  die("Got no parameter to change");
+  $retval["message"] = "Got no parameter to change";
 }
 
+$retval["mail"] = $user->mail;
+
 ldap_close($ldapconn);
+echo json_encode($retval);
 
 ?>

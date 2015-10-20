@@ -98,12 +98,21 @@ define('USE_ANGULAR', true);
                   <td>
                     <span editable-text="user.mail"
                         e-form="mailBtnForm"
-                        onbeforesave="list.updateMail($data, user)">
+                        onbeforesave="list.updateMail($data, $form, user)"
+                        onshow="list.resetEditableForm($form)">
                       {{user.mail}}
                     </span>
+                    <span class="fa fa-refresh"
+                        ng-show="mailBtnForm.loading"
+                        ng-class="{'fa-spin' : mailBtnForm.loading}"></span>
+                    <span class="fa fa-check"
+                        ng-show="mailBtnForm.success"></span>
+                    <span class="fa fa-times"
+                        ng-show="mailBtnForm.fail"></span>
                     <span class="glyphicon glyphicon-pencil fieldEditBtn"
                         ng-click="mailBtnForm.$show()"
-                        ng-hide="mailBtnForm.$visible" />
+                        ng-hide="mailBtnForm.$visible || mailBtnForm.loading">
+                    </span>
                   </td>
                 </tr>
                 <tr>
