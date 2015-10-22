@@ -38,21 +38,32 @@ body {
   border-top-right-radius: 0;
 }
 
-table.sortable > tr > th {
+table.sortable > tbody > tr > th {
   cursor: pointer;
 }
 
-td > ul {
+table.userdetails td > ul {
   margin-bottom: 0;
-  padding-left: 25px;
+  margin-left: 0.5ex;
+  padding-left: 2ex;
 }
+
+/*table.userdetails td > ul > li {
+  list-style-position: inside;
+  padding-left: 10px;
+  text-indent: -10px;
+}*/
 
 th.lblGruppen {
   vertical-align: top;
 }
 
-span.fieldEditBtn {
+.clickable {
   cursor: pointer;
+}
+
+table.userdetails > tbody > tr > th {
+  padding-right: 5px;
 }
 
 /*.table > tbody > tr > td[colspan] {

@@ -3,10 +3,12 @@ require_once('config.inc.php');
 
 require_once('ldap.inc.php');
 require_once('user.inc.php');
+require_once('groupOu.inc.php');
 session_start();
 
 $ldapconn = ldap_bind_session();
 $users = User::readUsers($ldapconn);
+$groupOus = GroupOu::readGroupOus($ldapconn);
 
 ldap_close($ldapconn);
 
@@ -22,49 +24,46 @@ define('USE_ANGULAR', true);
     <div class="container" ng-controller="ListController as list">
       <h1>User anzeigen</h1>
 
-      <!--<div class="alert alert-info">
-        <p>Sort Field: {{list.sortField}}</p>
-        <p>Sort Reverse: {{list.sortReverse}}</p>
-        <p>Search Query: {{list.searchText}}</p>
-      </div>-->
-
       <form>
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" class="form-control" placeholder="Suchen" ng-model="list.searchText">
+            <input type="text" class="form-control"
+                placeholder="Suchen" ng-model="list.searchText">
           </div>
         </div>
       </form>
 
       <table class="table table-hover sortable">
+        <!-- Titelzeile der Tabelle mit Sortiermöglichkeiten -->
         <tr>
           <th ng-click="list.sortClick('cn')">
             cn
             <span ng-show="list.sortField === 'cn'"
                 class="fa fa-caret-down"
                 ng-class="{'fa-caret-down': !list.sortReverse,
-                  'fa-caret-up': list.sortReverse}"
-            />
+                  'fa-caret-up': list.sortReverse}">
+            </span>
           </th>
           <th ng-click="list.sortClick('displayName')">
             Name
             <span ng-show="list.sortField === 'displayName'"
                 class="fa fa-caret-down"
                 ng-class="{'fa-caret-down': !list.sortReverse,
-                  'fa-caret-up': list.sortReverse}"
-            />
+                  'fa-caret-up': list.sortReverse}">
+            </span>
           </th>
           <th ng-click="list.sortClick('mail')">
             E-Mail
             <span ng-show="list.sortField === 'mail'"
                 class="fa fa-caret-down"
                 ng-class="{'fa-caret-down': !list.sortReverse,
-                  'fa-caret-up': list.sortReverse}"
-            />
+                  'fa-caret-up': list.sortReverse}">
+            </span>
           </th>
         </tr>
 
+        <!-- Tabelleneintrag für Benutzer -->
         <tr ng-repeat-start="user in list.userData
               | orderBy:list.sortType:list.sortReverse
               | filter:list.searchText"
@@ -73,10 +72,9 @@ define('USE_ANGULAR', true);
           <td>{{user.cn}}</td>
           <td>{{user.displayName}}</td>
           <td>{{user.mail}}</td>
-          <!--<td>{{user.expanded}}</td>
-          <td>{{user.detailLoaded}}</td>-->
         </tr>
 
+        <!-- Details für Benutzer -->
         <tr ng-repeat-end="" ng-if="user.expanded">
           <td colspan="3">
             <div class="well">
@@ -84,7 +82,7 @@ define('USE_ANGULAR', true);
                   ng-click="list.expandClick(user.userId)">
                 &times;
               </a>
-              <table>
+              <table class="userdetails">
                 <tr>
                   <th>cn:</th>
                   <td>{{user.cn}}</td>
@@ -109,7 +107,7 @@ define('USE_ANGULAR', true);
                         ng-show="mailBtnForm.success"></span>
                     <span class="fa fa-times"
                         ng-show="mailBtnForm.fail"></span>
-                    <span class="glyphicon glyphicon-pencil fieldEditBtn"
+                    <span class="glyphicon glyphicon-pencil clickable"
                         ng-click="mailBtnForm.$show()"
                         ng-hide="mailBtnForm.$visible || mailBtnForm.loading">
                     </span>
@@ -118,12 +116,15 @@ define('USE_ANGULAR', true);
                 <tr>
                   <th class="lblGruppen">Gruppen:</th>
                   <td>
-                    <ul>
+                    <ul ng-if="user.details.groups.length">
                       <li ng-repeat="group in user.details.groups">
                         {{group.cn}}
                         <span class="small">({{group.description}})</span>
                       </li>
                     </ul>
+                    <span class="glyphicon glyphicon-plus clickable"
+                        ng-click="list.addGroup(user)">
+                    </span>
                   </td>
                 </tr>
               </table>
@@ -132,42 +133,72 @@ define('USE_ANGULAR', true);
         </tr>
       </table>
 
-<?php /*      <ul class="list-group">
-<?php foreach ($users as $user) { ?>
-        <li class="list-group-item">
-          <h4 class="list-group-item-heading">
-            <?php echo $ou->ou ?>
-            <span class="small">
-              (<?php echo $ou->dn ?>)
-            </span>
-          </h4>
-          <p class="list-group-item-text"><?php echo $ou->description ?></p>
-<?php     if (!empty($ou->groups)) { ?>
-          <ul class="list-group">
-<?php       foreach ($ou->groups as $group) { ?>
-            <li class="list-group-item">
-              <h5 class="list-group-item-heading">
-                <?php echo $group->cn ?>
-                <span class="small">
-                  (<?php echo $group->dn ?>)
-                </span>
-              </h5>
-              <p class="list-group-item-text"><?php echo $group->description ?></p>
-            </li>
-<?php       } ?>
-          </ul>
-<?php     } ?>
-        </li>
-<?php } ?>
-</ul> */ ?>
+      <!-- Modal-Dialog zur Gruppenauswahl zum Hinzufügen -->
+      <div id="groupAddModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close"
+                  data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Gruppe hinzufügen</h4>
+            </div>
+            <div class="modal-body">
+              <div id="accordion" class="panel-group">
+                <div class="panel panel-default" ng-repeat="ou in list.groupData">
+                  <div data-toggle="collapse" href="#collapse{{ou.ou}}"
+                      data-parent="#accordion"
+                      class="panel-heading clickable">
+                    <h4 class="panel-title">
+                      {{ou.ou}}
+                      <span class="small">
+                        ({{ou.dn}})
+                      </span>
+                    </h4>
+                    <p class="list-group-item-text">
+                      {{ou.description}}
+                    </p>
+                  </div>
+                  <div id="collapse{{ou.ou}}" class="panel-collapse collapse">
+                    <ul class="list-group" ng-if="ou.groups.length">
+                      <li class="list-group-item"
+                          ng-repeat="group in ou.groups"
+                          ng-show="!list.addGroupUserHasGroup(group.dn)">
+                        <h5 class="list-group-item-heading">
+                          {{group.cn}}
+                          <span class="small">
+                            ({{group.dn}})
+                          </span>
+                        </h5>
+                        <p class="list-group-item-text">
+                          {{group.description}}
+                        </p>
+                      </li>
+                    </ul>
+                    <div class="panel-body" ng-if="!ou.groups.length">
+                      Keine Gruppen in dieser Kategorie.
+                    </div>
+                  </div> <!-- panel-collapse -->
+                </div> <!-- panel -->
+              </div> <!-- panel-group -->
+            </div> <!-- modal-body -->
+            <div class="modal-footer">
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       <!-- DEBUG -->
-      <p><pre><?php print_r($users); ?></pre></p>
+      <!--<p><pre><?php print_r($users); ?></pre></p> -->
     </div>
 
     <!-- data for the user list (is then parsed by AngularJS) -->
     <script type="application/json" json-data id="jsonUsers">
       <?php echo json_encode($users, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT); ?>
+    </script>
+    <script type="application/json" json-data id="jsonGroups">
+      <?php echo json_encode($groupOus, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT); ?>
     </script>
 
 <?php include('html_bottom.inc.php'); ?>

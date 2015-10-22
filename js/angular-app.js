@@ -10,7 +10,10 @@
     this.sortReverse = false;
     this.searchText = '';
 
+    this.userAddGroup = false;
+
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
+    this.groupData = JSON.parse(document.getElementById('jsonGroups').textContent);
 
     for (var i = 0; i < this.userData.length; i++) {
       this.userData[i].userId = i;
@@ -40,7 +43,11 @@
           .success(function(data) {
         that.userData[userId].details = data;
         that.userData[userId].detailsLoaded = true;
-      })
+        that.userData[userId].groupDns = {};
+        that.userData[userId].details.groups.map(function(item) {
+          that.userData[userId].groupDns[item.dn] = item;
+        });
+      });
     }
 
     this.formatJson = function(json_str) {
@@ -73,9 +80,21 @@
     }
 
     this.resetEditableForm = function(form) {
-        form.loading = false;
-        form.success = false;
-        form.fail = false;
+      form.loading = false;
+      form.success = false;
+      form.fail = false;
+    }
+
+    this.addGroup = function(user) {
+      this.userAddGroup = user;
+      angular.element('#groupAddModal').modal('show');
+    }
+
+    this.addGroupUserHasGroup = function(groupDn) {
+      if (!this.userAddGroup) {
+        return false;
+      }
+      return this.userAddGroup.groupDns.hasOwnProperty(groupDn);
     }
   });
 
