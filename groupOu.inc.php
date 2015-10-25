@@ -73,6 +73,18 @@ class Group {
       return true;
     }
   }
+
+
+
+  public function removeUser($dn) {
+    $entry = array();
+    $entry['member'] = $dn;
+    if (ldap_mod_del($this->ldapconn, $this->dn, $entry) === false) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 class GroupOu {

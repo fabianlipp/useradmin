@@ -13,6 +13,8 @@
 
     this.userAddGroup = false;
 
+    this.groupRemoving = {};
+
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
     this.groupData = JSON.parse(document.getElementById('jsonGroups').textContent);
 
@@ -27,6 +29,7 @@
       this.userData[i].details = null;
       this.userData[i].detailsLoaded = false;
       this.userData[i].loading = false;
+      this.groupRemoving[this.userData[i].dn] = {};
     }
 
     this.sortClick = function(field) {
@@ -107,8 +110,8 @@
     };
 
     this.addGroupToUser = function(group) {
-      var user = this.userAddGroup
-      var that = this
+      var user = this.userAddGroup;
+      var that = this;
       user.loading = true;
       angular.element('#groupAddModal').modal('hide');
       $http.post('addUserGroup.json.php',
@@ -130,13 +133,44 @@
             console.log(response);
             that.loadDetail(user.userId); // resets userAddGroup.loading
             that.alerts.push(
-              {type: 'warning',
+              {type: 'danger',
                 msg: 'Konnte Benutzer ' + user.cn + ' nicht zu Gruppe '
-                    + group.cn + ' hinzufügen',
-              dismiss: 5000});
+                    + group.cn + ' hinzufügen'});
           });
-      return false;
     };
+
+    this.removeGroupFromUser = function(user, group) {
+      var that = this;
+      this.groupRemoving[user.dn][group.dn] = true;
+      $http.post('removeUserGroup.json.php',
+          {'userdn': user.dn,
+            'groupdn': group.dn})
+          .then(function(response) {
+            // success
+            console.log("success");
+            console.log(response);
+            user.details.groups.splice(user.details.groups.indexOf(group), 1)
+            delete user.groupDns[group.dn];
+            that.groupRemoving[user.dn][group.dn] = false;
+            that.alerts.push(
+              {type: 'success',
+                msg: 'Benutzer ' + user.cn + ' aus Gruppe '
+                    + group.cn + ' entfernt',
+              dismiss: 5000});
+          }, function(response) {
+            // error
+            console.log("error");
+            console.log(response);
+            that.alerts.push(
+              {type: 'danger',
+                msg: 'Konnte Benutzer ' + user.cn + ' nicht aus Gruppe '
+                    + group.cn + ' entfernen'});
+          });
+    };
+
+    this.groupIsRemoving = function(user, group) {
+      return this.groupRemoving[user.dn][group.dn];
+    }
   });
 
 })();

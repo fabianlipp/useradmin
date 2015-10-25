@@ -138,6 +138,13 @@ define('USE_ANGULAR', true);
                       <li ng-repeat="group in user.details.groups">
                         {{group.cn}}
                         <span class="small">({{group.description}})</span>
+                        <span class="fa fa-refresh"
+                            ng-show="list.groupIsRemoving(user, group)"
+                            ng-class="{'fa-spin' :
+                                list.groupIsRemoving(user, group)}"></span>
+                        <span class="glyphicon glyphicon-minus clickable"
+                            ng-click="list.removeGroupFromUser(user, group)">
+                        </span>
                       </li>
                     </ul>
                     <span class="glyphicon glyphicon-plus clickable"
