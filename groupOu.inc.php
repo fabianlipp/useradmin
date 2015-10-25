@@ -7,6 +7,8 @@ class Group {
   var $cn;
   var $description;
 
+  private $ldapconn;
+
   const FILTER_GROUPS = "(objectclass=groupOfNames)";
 
   public static function readGroups($ldapconn, $baseDn) {
@@ -28,11 +30,14 @@ class Group {
           $newGroup->description = $att['description'][0];
         }
 
+        $newGroup->ldapconn = $ldapconn;
         $groups[] = $newGroup;
       } while ($entry = ldap_next_entry($ldapconn, $entry));
     }
     return $groups;
   }
+
+
 
   public static function loadGroup($ldapconn, $dn) {
     $search = ldap_read($ldapconn, $dn, Group::FILTER_GROUPS,
@@ -52,7 +57,20 @@ class Group {
         $newGroup->description = $att['description'][0];
       }
 
+      $newGroup->ldapconn = $ldapconn;
       return $newGroup;
+    }
+  }
+
+
+
+  public function addUser($dn) {
+    $entry = array();
+    $entry['member'] = $dn;
+    if (ldap_mod_add($this->ldapconn, $this->dn, $entry) === false) {
+      return false;
+    } else {
+      return true;
     }
   }
 }

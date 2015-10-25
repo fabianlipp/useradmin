@@ -19,6 +19,7 @@ require_once('config.inc.php');
     <script src="js/bootstrap.min.js"></script>
 <?php if (defined('USE_ANGULAR')) { ?>
     <script src="js/angular.min.js"></script>
+    <script src="js/ui-bootstrap-tpls.min.js"></script>
     <script src="js/angular-app.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.2/angular-animate.js"></script>
     <link href="css/xeditable.css" rel="stylesheet">

@@ -22,6 +22,20 @@ define('USE_ANGULAR', true);
 <?php include('navigation.inc.php'); ?>
 
     <div class="container" ng-controller="ListController as list">
+      <!-- show alerts -->
+      <div id="alert-container" class="container">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-6">
+          <uib-alert ng-repeat="alert in list.alerts"
+              type="{{alert.type}}"
+              close="list.closeAlert($index)"
+              dismiss-on-timeout="{{alert.dismiss}}">
+            {{alert.msg}}
+          </uib-alert>
+        </div>
+        <div class="col-xs-3"></div>
+      </div>
+
       <h1>User anzeigen</h1>
 
       <form>
@@ -82,7 +96,11 @@ define('USE_ANGULAR', true);
                   ng-click="list.expandClick(user.userId)">
                 &times;
               </a>
-              <table class="userdetails">
+              <div style="text-align: center" ng-if="user.loading">
+                <span class="fa fa-refresh"
+                    ng-class="{'fa-spin' : user.loading}"></span>
+              </div>
+              <table class="userdetails" ng-if="!user.loading">
                 <tr>
                   <th>cn:</th>
                   <td>{{user.cn}}</td>
@@ -161,9 +179,10 @@ define('USE_ANGULAR', true);
                   </div>
                   <div id="collapse{{ou.ou}}" class="panel-collapse collapse">
                     <ul class="list-group" ng-if="ou.groups.length">
-                      <li class="list-group-item"
+                      <li class="list-group-item clickable"
                           ng-repeat="group in ou.groups"
-                          ng-show="!list.addGroupUserHasGroup(group.dn)">
+                          ng-show="!list.addGroupUserHasGroup(group)"
+                          ng-click="list.addGroupToUser(group)">
                         <h5 class="list-group-item-heading">
                           {{group.cn}}
                           <span class="small">

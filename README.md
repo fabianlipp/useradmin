@@ -12,4 +12,5 @@ LDAP server.
 * js/angular.min.js v1.4.7
 * js/xeditable.min.js v0.1.8
 * css/xeditable.css v0.1.8
+* ui-bootstrap-tpls.min.js v.0.14.3
 
