@@ -14,6 +14,7 @@
     this.userAddGroup = false;
 
     this.groupRemoving = {};
+    this.groupAdding = {};
 
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
     this.groupData = JSON.parse(document.getElementById('jsonGroups').textContent);
@@ -112,7 +113,7 @@
     this.addGroupToUser = function(group) {
       var user = this.userAddGroup;
       var that = this;
-      user.loading = true;
+      this.groupAdding[user.dn] = true;
       angular.element('#groupAddModal').modal('hide');
       $http.post('addUserGroup.json.php',
           {'userdn': this.userAddGroup.dn,
@@ -121,7 +122,9 @@
             // success
             console.log("success");
             console.log(response);
-            that.loadDetail(user.userId); // resets userAddGroup.loading
+            user.details.groups.push(group);
+            user.groupDns[group.dn] = group;
+            that.groupAdding[user.dn] = false;
             that.alerts.push(
               {type: 'success',
                 msg: 'Benutzer ' + user.cn + ' zu Gruppe '
@@ -131,7 +134,7 @@
             // error
             console.log("error");
             console.log(response);
-            that.loadDetail(user.userId); // resets userAddGroup.loading
+            that.groupAdding[user.dn] = false;
             that.alerts.push(
               {type: 'danger',
                 msg: 'Konnte Benutzer ' + user.cn + ' nicht zu Gruppe '
@@ -161,6 +164,7 @@
             // error
             console.log("error");
             console.log(response);
+            that.groupRemoving[user.dn][group.dn] = false;
             that.alerts.push(
               {type: 'danger',
                 msg: 'Konnte Benutzer ' + user.cn + ' nicht aus Gruppe '
@@ -170,7 +174,11 @@
 
     this.groupIsRemoving = function(user, group) {
       return this.groupRemoving[user.dn][group.dn];
-    }
+    };
+
+    this.groupIsAdding = function(user) {
+      return this.groupAdding[user.dn];
+    };
   });
 
 })();

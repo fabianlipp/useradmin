@@ -147,6 +147,10 @@ define('USE_ANGULAR', true);
                         </span>
                       </li>
                     </ul>
+                        <span class="fa fa-refresh"
+                            ng-show="list.groupIsAdding(user)"
+                            ng-class="{'fa-spin' :
+                                list.groupIsAdding(user)}"></span>
                     <span class="glyphicon glyphicon-plus clickable"
                         ng-click="list.addGroup(user)">
                     </span>
