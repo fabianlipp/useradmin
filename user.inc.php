@@ -117,6 +117,19 @@ class User {
       return true;
     }
   }
+
+
+
+  public function changeDisplayName($newName) {
+    $entry = array();
+    $entry["displayName"] = $newName;
+    if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
+      return false;
+    } else {
+      $this->displayName = $newName;
+      return true;
+    }
+  }
 }
 
 

@@ -107,7 +107,11 @@ define('USE_ANGULAR', true);
                 </tr>
                 <tr>
                   <th>Name:</th>
-                  <td>{{user.displayName}}</td>
+                  <td>
+                    <usradm-edit-text usradm-field="user.displayName"
+                        onbeforesave="list.updateDisplayName(data, form, user)">
+                    </usradm-edit-text>
+                  </td>
                 </tr>
                 <tr>
                   <th>E-Mail:</th>

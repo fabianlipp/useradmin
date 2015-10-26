@@ -92,6 +92,31 @@
       return false;
     };
 
+    this.updateDisplayName = function(data, form, user) {
+      form.loading = true;
+      form.success = false;
+      form.fail = false;
+      $http.post('changeUserDetail.php',
+          {'dn': user.dn,
+            'newDisplayName': data})
+          .then(function(response) {
+            // success
+            form.loading = false;
+            form.success = true;
+            if (typeof response.data.displayName != 'undefined') {
+              user.displayName = response.data.displayName;
+            }
+          }, function(response) {
+            // error
+            form.loading = false;
+            form.fail = true;
+            if (typeof response.data.displayName != 'undefined') {
+              user.displayName = response.data.displayName;
+            }
+          });
+      return false;
+    };
+
     this.addGroup = function(user) {
       this.userAddGroup = user;
       angular.element('#groupAddModal').modal('show');
