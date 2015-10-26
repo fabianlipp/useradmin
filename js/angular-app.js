@@ -25,12 +25,12 @@
     };
 
     for (var i = 0; i < this.userData.length; i++) {
-      this.userData[i].userId = i;
-      this.userData[i].expanded = false;
-      this.userData[i].details = null;
-      this.userData[i].detailsLoaded = false;
-      this.userData[i].loading = false;
-      this.groupRemoving[this.userData[i].dn] = {};
+      var user = this.userData[i];
+      user.expanded = false;
+      user.details = null;
+      user.detailsLoaded = false;
+      user.loading = false;
+      this.groupRemoving[user.dn] = {};
     }
 
     this.sortClick = function(field) {
@@ -40,25 +40,25 @@
       this.sortField = field;
     };
 
-    this.expandClick = function(userId) {
-      this.userData[userId].expanded = !this.userData[userId].expanded;
-      if (!this.userData[userId].detailsLoaded) {
-        this.loadDetail(userId);
+    this.expandClick = function(user) {
+      user.expanded = !user.expanded;
+      if (!user.detailsLoaded) {
+        this.loadDetail(user);
       }
     };
 
-    this.loadDetail = function(userId) {
+    this.loadDetail = function(user) {
       var that = this;
-      this.userData[userId].loading = true;
+      user.loading = true;
       $http.get('getUserDetails.json.php',
-          {params: {dn: this.userData[userId].dn}})
+          {params: {dn: user.dn}})
           .success(function(data) {
-        that.userData[userId].details = data;
-        that.userData[userId].detailsLoaded = true;
-        that.userData[userId].loading = false;
-        that.userData[userId].groupDns = {};
-        that.userData[userId].details.groups.map(function(item) {
-          that.userData[userId].groupDns[item.dn] = item;
+        user.details = data;
+        user.detailsLoaded = true;
+        user.loading = false;
+        user.groupDns = {};
+        user.details.groups.map(function(item) {
+          user.groupDns[item.dn] = item;
         });
       });
     };

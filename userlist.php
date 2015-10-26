@@ -82,7 +82,7 @@ define('USE_ANGULAR', true);
               | orderBy:list.sortType:list.sortReverse
               | filter:list.searchText"
             ng-if="!user.expanded"
-            ng-click="list.expandClick(user.userId)">
+            ng-click="list.expandClick(user)">
           <td>{{user.cn}}</td>
           <td>{{user.displayName}}</td>
           <td>{{user.mail}}</td>
@@ -93,7 +93,7 @@ define('USE_ANGULAR', true);
           <td colspan="3">
             <div class="well">
               <a href="#" class="close" aria-label="close"
-                  ng-click="list.expandClick(user.userId)">
+                  ng-click="list.expandClick(user)">
                 &times;
               </a>
               <div style="text-align: center" ng-if="user.loading">
