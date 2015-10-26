@@ -1,0 +1,17 @@
+<span editable-text="usradmField"
+    e-form="usradmEditForm"
+    onbeforesave="onBeforesaveFn({data: $data, form: $form})"
+    onshow="resetEditableForm($form)">
+  {{usradmField}}
+</span>
+<span class="fa fa-refresh"
+    ng-show="usradmEditForm.loading"
+    ng-class="{'fa-spin' : usradmEditForm.loading}"></span>
+<span class="fa fa-check"
+    ng-show="usradmEditForm.success"></span>
+<span class="fa fa-times"
+    ng-show="usradmEditForm.fail"></span>
+<span class="glyphicon glyphicon-pencil clickable"
+    ng-click="usradmEditForm.$show()"
+    ng-hide="usradmEditForm.$visible || usradmEditForm.loading">
+</span>

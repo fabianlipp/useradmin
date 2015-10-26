@@ -92,12 +92,6 @@
       return false;
     };
 
-    this.resetEditableForm = function(form) {
-      form.loading = false;
-      form.success = false;
-      form.fail = false;
-    };
-
     this.addGroup = function(user) {
       this.userAddGroup = user;
       angular.element('#groupAddModal').modal('show');
@@ -178,6 +172,27 @@
 
     this.groupIsAdding = function(user) {
       return this.groupAdding[user.dn];
+    };
+  });
+
+
+
+  userlistApp.directive('usradmEditText', function() {
+
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/editText.html',
+      scope: {
+        usradmField: '=usradmField',
+        onBeforesaveFn: '&onbeforesave'
+      },
+      link: function(scope, element, attrs) {
+        scope.resetEditableForm = function (form) {
+          form.loading = false;
+          form.success = false;
+          form.fail = false;
+        };
+      }
     };
   });
 
