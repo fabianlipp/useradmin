@@ -1,12 +1,12 @@
 (function(){
-  var userlistApp = angular.module('userlistApp',
+  var useradminApp = angular.module('useradminApp',
       ['ngAnimate', 'xeditable', 'ui.bootstrap']);
 
-  userlistApp.run(function(editableOptions) {
+  useradminApp.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
   });
 
-  userlistApp.controller('ListController', function($http) {
+  useradminApp.controller('UserlistController', function($http) {
     this.sortField = 'cn';
     this.sortReverse = false;
     this.searchText = '';
@@ -202,7 +202,7 @@
 
 
 
-  userlistApp.directive('usradmEditText', function() {
+  useradminApp.directive('usradmEditText', function() {
 
     return {
       restrict: 'E',
@@ -219,6 +219,11 @@
         };
       }
     };
+  });
+
+  useradminApp.controller('GrouplistController', function() {
+    this.groupData = JSON.parse(
+        document.getElementById('jsonGroupOus').textContent);
   });
 
 })();

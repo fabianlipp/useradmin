@@ -3,7 +3,7 @@ require_once('config.inc.php');
 ?>
 <!DOCTYPE html>
 <?php if (defined('USE_ANGULAR')) { ?>
-<html lang="en" ng-app="userlistApp">
+<html lang="en" ng-app="useradminApp">
 <?php } else { ?>
 <html lang="en">
 <?php } ?>

@@ -1,11 +1,13 @@
 <?php
 
 require_once('config.inc.php');
+require_once('user.inc.php');
 
 class Group {
   var $dn;
   var $cn;
   var $description;
+  var $members;
 
   private $ldapconn;
 
@@ -59,6 +61,29 @@ class Group {
 
       $newGroup->ldapconn = $ldapconn;
       return $newGroup;
+    }
+  }
+
+
+
+  public function loadUsers() {
+    $search = ldap_read($this->ldapconn, $this->dn, Group::FILTER_GROUPS,
+        array("member"));
+    if (ldap_count_entries($this->ldapconn, $search) > 0) {
+      $entry = ldap_first_entry($this->ldapconn, $search);
+
+      $att = ldap_get_attributes($this->ldapconn, $entry);
+      if (isset($att['member'])) {
+        $this->members = [];
+        for($i = 0; $i < $att['member']['count']; $i++) {
+          $dn = $att['member'][$i];
+          if ($dn != DUMMY_USER_DN) {
+            $this->members[] = User::readUser($this->ldapconn, $dn);
+          }
+        }
+      } else {
+        $this->members = [];
+      }
     }
   }
 

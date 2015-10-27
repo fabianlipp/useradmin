@@ -21,7 +21,7 @@ define('USE_ANGULAR', true);
 
 <?php include('navigation.inc.php'); ?>
 
-    <div class="container" ng-controller="ListController as list">
+    <div class="container" ng-controller="UserlistController as list">
       <!-- show alerts -->
       <div id="alert-container" class="container">
         <div class="col-xs-3"></div>
