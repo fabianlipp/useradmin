@@ -23,6 +23,6 @@ require_once('config.inc.php');
     <script src="js/angular-app.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.2/angular-animate.js"></script>
     <link href="css/xeditable.css" rel="stylesheet">
-    <script src="js/xeditable.js"></script>
+    <script src="js/xeditable.min.js"></script>
 <?php } ?>
   </head>

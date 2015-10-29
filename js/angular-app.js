@@ -157,7 +157,7 @@
             that.alerts.push(
               {type: 'danger',
                 msg: 'Konnte Benutzer ' + user.cn + ' nicht zu Gruppe '
-                    + group.cn + ' hinzufügen'});
+                    + group.cn + ' hinzufügen: ' + response.data.detail});
           });
     };
 
@@ -187,7 +187,7 @@
             that.alerts.push(
               {type: 'danger',
                 msg: 'Konnte Benutzer ' + user.cn + ' nicht aus Gruppe '
-                    + group.cn + ' entfernen'});
+                    + group.cn + ' entfernen: ' + response.data.detail});
           });
     };
 

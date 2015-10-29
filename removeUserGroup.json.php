@@ -32,6 +32,7 @@ if ($group->removeUser($userdn) === true) {
   http_response_code(200);
 } else {
   http_response_code(500);
+  $retval["detail"] = ldap_error($ldapconn);
   $retval["message"] = "Could not write change to LDAP directory";
 }
 
