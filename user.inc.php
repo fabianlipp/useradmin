@@ -130,6 +130,22 @@ class User {
       return true;
     }
   }
+
+
+
+  public function changePassword($newPassword) {
+    $salt = openssl_random_pseudo_bytes(12);
+    $encoded_newPassword = "{SSHA}"
+        . base64_encode(hash('sha1', $newPassword . $salt, true)
+        . $salt);
+    $entry = array();
+    $entry["userPassword"] = $encoded_newPassword;
+    if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 

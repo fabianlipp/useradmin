@@ -12,17 +12,25 @@
     this.searchText = '';
 
     this.userAddGroup = false;
+    this.pwChangeUser = false;
 
     this.groupRemoving = {};
     this.groupAdding = {};
 
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
-    this.groupData = JSON.parse(document.getElementById('jsonGroups').textContent);
+    var jsonGroupEl = document.getElementById('jsonGroups');
+    if (jsonGroupEl) {
+      this.groupData = JSON.parse(jsonGroupEl.textContent);
+    }
 
     this.alerts = [];
     this.closeAlert = function(index) {
       this.alerts.splice(index, 1);
     };
+
+    this.pwd1 = '';
+    this.pwd2 = '';
+
 
     for (var i = 0; i < this.userData.length; i++) {
       var user = this.userData[i];
@@ -30,6 +38,8 @@
       user.details = null;
       user.detailsLoaded = false;
       user.loading = false;
+      user.pwChanged = false;
+      user.pwChanging = false;
       this.groupRemoving[user.dn] = {};
     }
 
@@ -198,6 +208,52 @@
     this.groupIsAdding = function(user) {
       return this.groupAdding[user.dn];
     };
+
+    this.showChangePw = function(user) {
+      this.pwChangeUser = user;
+      var el = angular.element('#pwd1');
+      this.pwd1 = '';
+      this.pwd2 = '';
+      user.pwChanged = false;
+      angular.element('#pwChangeModal').modal('show');
+    };
+
+    this.isSamePw = function() {
+      return (this.pwd1 == this.pwd2);
+    }
+
+    this.changePassword = function() {
+      if (!this.pwd1 || this.pwd1 != this.pwd2) {
+        return;
+      }
+      var that = this;
+      var user = this.pwChangeUser;
+      user.pwChanging = true;
+      angular.element('#pwChangeModal').modal('hide');
+      $http.post('changePassword.json.php',
+          {'dn': user.dn,
+            'newPassword': this.pwd1})
+          .then(function(response) {
+            // success
+            user.pwChanging = false;
+            user.pwChanged = true;
+            that.alerts.push(
+              {type: 'success',
+                msg: 'Benutzerpasswort für ' + user.cn
+                    + ' geändert.',
+              dismiss: 5000});
+          }, function(response) {
+            // error
+            user.pwChanging = false;
+            user.pwChanged = false;
+            that.alerts.push(
+              {type: 'danger',
+                msg: 'Benutzerpasswort für ' + user.cn
+                    + ' konnte nicht geändert werden:'
+                    + response.data.detail});
+          });
+    };
+
   });
 
 

@@ -28,6 +28,8 @@ function classIfActive($requestUri) {
             <li<?php classIfActive("index.php"); ?>><a href="index.php">Home</a></li>
             <li<?php classIfActive("gruppen.php"); ?>><a href="gruppen.php">Gruppen</a></li>
             <li<?php classIfActive("userlist.php"); ?>><a href="userlist.php">User</a></li>
+            <li<?php classIfActive("changePassword.php"); ?>><a href="changePassword.php">Passwort ändern</a></li>
+            <!--
             <li class="dropdown">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">Messages <b class="caret"></b></a>
               <ul role="menu" class="dropdown-menu">
@@ -38,12 +40,15 @@ function classIfActive($requestUri) {
                 <li><a href="#">Trash</a></li>
               </ul>
             </li>
+            -->
           </ul>
+          <!--
           <form role="search" class="navbar-form navbar-left">
             <div class="form-group">
               <input type="text" placeholder="Search" class="form-control">
             </div>
           </form>
+          -->
           <ul class="nav navbar-nav navbar-right">
             <li><a href="logout.php">Logout</a></li>
           </ul>

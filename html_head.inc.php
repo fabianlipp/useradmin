@@ -25,4 +25,5 @@ require_once('config.inc.php');
     <link href="css/xeditable.css" rel="stylesheet">
     <script src="js/xeditable.min.js"></script>
 <?php } ?>
+<?php if (isset($filespecific_js)) { echo $filespecific_js; } ?>
   </head>
