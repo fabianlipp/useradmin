@@ -20,20 +20,7 @@ class Group {
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
       do {
-        $newGroup = new Group();
-        $newGroup->dn = ldap_get_dn($ldapconn, $entry);
-
-        $att = ldap_get_attributes($ldapconn, $entry);
-        if (isset($att['cn']) && $att['cn']['count'] == 1) {
-          $newGroup->cn = $att['cn'][0];
-        }
-        $vals = ldap_get_values($ldapconn, $entry, "description");
-        if (isset($att['description']) && $att['description']['count'] == 1) {
-          $newGroup->description = $att['description'][0];
-        }
-
-        $newGroup->ldapconn = $ldapconn;
-        $groups[] = $newGroup;
+        $groups[] = Group::readFromLdapEntry($ldapconn, $entry);
       } while ($entry = ldap_next_entry($ldapconn, $entry));
     }
     return $groups;
@@ -47,21 +34,27 @@ class Group {
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
 
-      $newGroup = new Group();
-      $newGroup->dn = ldap_get_dn($ldapconn, $entry);
-
-      $att = ldap_get_attributes($ldapconn, $entry);
-      if (isset($att['cn']) && $att['cn']['count'] == 1) {
-        $newGroup->cn = $att['cn'][0];
-      }
-      $vals = ldap_get_values($ldapconn, $entry, "description");
-      if (isset($att['description']) && $att['description']['count'] == 1) {
-        $newGroup->description = $att['description'][0];
-      }
-
-      $newGroup->ldapconn = $ldapconn;
-      return $newGroup;
+      return Group::readFromLdapEntry($ldapconn, $entry);
     }
+  }
+
+
+
+  private static function readFromLdapEntry($ldapconn, $entry) {
+    $newGroup = new Group();
+    $newGroup->dn = ldap_get_dn($ldapconn, $entry);
+
+    $att = ldap_get_attributes($ldapconn, $entry);
+    if (isset($att['cn']) && $att['cn']['count'] == 1) {
+      $newGroup->cn = $att['cn'][0];
+    }
+    $vals = ldap_get_values($ldapconn, $entry, "description");
+    if (isset($att['description']) && $att['description']['count'] == 1) {
+      $newGroup->description = $att['description'][0];
+    }
+
+    $newGroup->ldapconn = $ldapconn;
+    return $newGroup;
   }
 
 
