@@ -5,8 +5,13 @@ require_once('config.inc.php');
 function classIfActive($requestUri) {
     $current_file_name = basename($_SERVER['REQUEST_URI']);
 
-    if ($current_file_name == $requestUri)
-        echo ' class="active"';
+    if (!is_array($requestUri)) {
+      $requestUri = array($requestUri);
+    }
+
+    if (in_array($current_file_name, $requestUri)) {
+      echo 'active';
+    }
 }
 
 ?>
@@ -23,24 +28,18 @@ function classIfActive($requestUri) {
           <a href="#" class="navbar-brand active"><?php echo PAGETITLE; ?></a>
         </div>
         <!-- Collection of nav links, forms, and other content for toggling -->
-        <div id="navbarCollapse" class="collapse navbar-collapse">
+        <div id="navbarCollapse" class="collapse navbar-collapse <?php classIfActive("index.php"); ?>">
           <ul class="nav navbar-nav">
-            <li<?php classIfActive("index.php"); ?>><a href="index.php">Home</a></li>
-            <li<?php classIfActive("gruppen.php"); ?>><a href="gruppen.php">Gruppen</a></li>
-            <li<?php classIfActive("userlist.php"); ?>><a href="userlist.php">User</a></li>
-            <li<?php classIfActive("changePassword.php"); ?>><a href="changePassword.php">Passwort ändern</a></li>
-            <!--
-            <li class="dropdown">
-              <a data-toggle="dropdown" class="dropdown-toggle" href="#">Messages <b class="caret"></b></a>
+            <li class="<?php classIfActive("index.php"); ?>"><a href="index.php">Home</a></li>
+            <li class="<?php classIfActive("gruppen.php"); ?>"><a href="gruppen.php">Gruppen</a></li>
+            <li class="dropdown <?php classIfActive(array("userlist.php", "changePassword.php")); ?>">
+              <a data-toggle="dropdown" class="dropdown-toggle" href="#">User<b class="caret"></b></a>
               <ul role="menu" class="dropdown-menu">
-                <li><a href="#">Inbox</a></li>
-                <li><a href="#">Drafts</a></li>
-                <li><a href="#">Sent Items</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Trash</a></li>
+                <li class="<?php classIfActive("userlist.php"); ?>"><a href="userlist.php">User bearbeiten</a></li>
+                <li class="<?php classIfActive("changePassword.php"); ?>"><a href="changePassword.php">Passwort ändern</a></li>
+                <!--<li class="divider"></li>-->
               </ul>
             </li>
-            -->
           </ul>
           <!--
           <form role="search" class="navbar-form navbar-left">
