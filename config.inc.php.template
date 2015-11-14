@@ -1,11 +1,15 @@
 <?php
 
 error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
+define('BASE_PATH', '/srv/www/htdocs/useradmin/');
 
 define('LDAP_SERVER', 'ldaps://example.com/');
 define('BASE_DN', 'dc=example,dc=com');
 define('GROUP_DN', 'ou=Groups,' . BASE_DN);
 define('USER_DN', 'ou=People,' . BASE_DN);
+define('DUMMY_USER_DN', 'cn=dummy,dc=example,dc=com');
 
 define('PAGETITLE', 'example.com User Admin');
 

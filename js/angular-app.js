@@ -60,7 +60,7 @@
     this.loadDetail = function(user) {
       var that = this;
       user.loading = true;
-      $http.get('getUserDetails.json.php',
+      $http.get('ajax/getUserDetails.json.php',
           {params: {dn: user.dn}})
           .success(function(data) {
         user.details = data;
@@ -81,7 +81,7 @@
       form.loading = true;
       form.success = false;
       form.fail = false;
-      $http.post('changeUserDetail.php',
+      $http.post('ajax/changeUserDetail.json.php',
           {'dn': user.dn,
             'newMail': data})
           .then(function(response) {
@@ -106,7 +106,7 @@
       form.loading = true;
       form.success = false;
       form.fail = false;
-      $http.post('changeUserDetail.php',
+      $http.post('ajax/changeUserDetail.json.php',
           {'dn': user.dn,
             'newDisplayName': data})
           .then(function(response) {
@@ -144,7 +144,7 @@
       var that = this;
       this.groupAdding[user.dn] = true;
       angular.element('#groupAddModal').modal('hide');
-      $http.post('addUserGroup.json.php',
+      $http.post('ajax/addUserGroup.json.php',
           {'userdn': this.userAddGroup.dn,
             'groupdn': group.dn})
           .then(function(response) {
@@ -174,7 +174,7 @@
     this.removeGroupFromUser = function(user, group) {
       var that = this;
       this.groupRemoving[user.dn][group.dn] = true;
-      $http.post('removeUserGroup.json.php',
+      $http.post('ajax/removeUserGroup.json.php',
           {'userdn': user.dn,
             'groupdn': group.dn})
           .then(function(response) {
@@ -230,7 +230,7 @@
       var user = this.pwChangeUser;
       user.pwChanging = true;
       angular.element('#pwChangeModal').modal('hide');
-      $http.post('changePassword.json.php',
+      $http.post('ajax/changePassword.json.php',
           {'dn': user.dn,
             'newPassword': this.pwd1})
           .then(function(response) {

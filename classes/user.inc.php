@@ -1,7 +1,7 @@
 <?php
 
-require_once('config.inc.php');
-require_once('groupOu.inc.php');
+require_once(__DIR__ . '/../config.inc.php');
+require_once(BASE_PATH . 'classes/group.inc.php');
 
 class User {
   var $dn;

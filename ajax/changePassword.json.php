@@ -1,9 +1,9 @@
 <?php
-require_once('config.inc.php');
+require_once(__DIR__ . '/../config.inc.php');
 
-require_once('ldap.inc.php');
-require_once('user.inc.php');
-require_once('groupOu.inc.php');
+require_once(BASE_PATH . 'ldap.inc.php');
+require_once(BASE_PATH . 'classes/user.inc.php');
+require_once(BASE_PATH . 'classes/group.php');
 session_start();
 
 $postdata = file_get_contents("php://input");
@@ -22,18 +22,9 @@ $user = User::readUser($ldapconn, $dn);
 $retval = array();
 
 // check which field should be changed
-if (!empty($request['newMail'])) {
-  $newMail = $request['newMail'];
-  if ($user->changeMail($newMail) === true) {
-    // success
-    http_response_code(200);
-  } else {
-    http_response_code(500);
-    $retval["message"] = "Could not write change to LDAP directory";
-  }
-} elseif (!empty($request['newDisplayName'])) {
-  $newName = $request['newDisplayName'];
-  if ($user->changeDisplayName($newName) === true) {
+if (!empty($request['newPassword'])) {
+  $newPass = $request['newPassword'];
+  if ($user->changePassword($newPass) === true) {
     // success
     http_response_code(200);
   } else {
@@ -44,9 +35,6 @@ if (!empty($request['newMail'])) {
   http_response_code(400);
   $retval["message"] = "Got no parameter to change";
 }
-
-$retval["mail"] = $user->mail;
-$retval["displayName"] = $user->displayName;
 
 ldap_close($ldapconn);
 echo json_encode($retval);
