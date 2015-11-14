@@ -259,7 +259,6 @@
 
 
   useradminApp.directive('usradmEditText', function() {
-
     return {
       restrict: 'E',
       templateUrl: 'templates/editText.html',
@@ -277,9 +276,54 @@
     };
   });
 
+
+
   useradminApp.controller('GrouplistController', function() {
     this.groupData = JSON.parse(
         document.getElementById('jsonGroupOus').textContent);
   });
 
+
+
+  useradminApp.controller('AddUserController', function($http) {
+    this.step = 1;
+    this.user = {
+      "cn": "",
+      "mail": "",
+      "sn": "",
+      "givenName": ""
+    };
+
+    this.groupData = JSON.parse(
+        document.getElementById('jsonGroups').textContent);
+
+    this.alerts = [];
+    this.closeAlert = function(index) {
+      this.alerts.splice(index, 1);
+    };
+
+    this.completeStep1 = function() {
+      var that = this;
+      $http.post('ajax/addUser.json.php',
+          {'cn': this.user.cn,
+            'mail':  this.user.mail,
+            'sn':  this.user.sn,
+            'givenName':  this.user.givenName})
+        .then(function(response) {
+            // success
+            that.alerts.push(
+              {type: 'success',
+                msg: 'Benutzer angelegt',
+              dismiss: 5000});
+            that.step = 2;
+          }, function(response) {
+            // error
+            that.alerts.push(
+              {type: 'danger',
+                msg: 'Benutzer konnte nicht angelegt werden: '
+                    + response.data.detail});
+          });
+
+    }
+  });
 })();

@@ -8,6 +8,8 @@ class User {
   var $cn;
   var $mail;
   var $displayName;
+  var $sn;
+  var $givenName;
   private $group_dns;
   var $groups = null;
 
@@ -59,6 +61,14 @@ class User {
 
     if (isset($att['displayName']) && $att['displayName']['count'] == 1) {
       $newUser->displayName = $att['displayName'][0];
+    }
+
+    if (isset($att['sn']) && $att['sn']['count'] == 1) {
+      $newUser->sn = $att['sn'][0];
+    }
+
+    if (isset($att['givenName']) && $att['givenName']['count'] == 1) {
+      $newUser->givenName = $att['givenName'][0];
     }
 
     $groups = [];
@@ -118,6 +128,24 @@ class User {
     $entry = array();
     $entry["userPassword"] = $encoded_newPassword;
     if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+
+
+  public function addToDirectory($ldapconn) {
+    $this->ldapconn = $ldapconn;
+    $entry = array();
+    $entry["cn"] = $this->cn;
+    $entry["mail"] = $this->mail;
+    $entry["sn"] = $this->sn;
+    $entry["givenName"] = $this->givenName;
+    $entry["displayName"] = $this->displayName;
+    $entry["objectClass"] = "inetOrgPerson";
+    if (ldap_add($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {
       return true;
