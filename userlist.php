@@ -163,44 +163,11 @@ define('USE_ANGULAR', true);
               <h4 class="modal-title">Gruppe hinzufügen</h4>
             </div>
             <div class="modal-body">
-              <div id="accordion" class="panel-group">
-                <div class="panel panel-default" ng-repeat="ou in list.groupData">
-                  <div data-toggle="collapse" href="#collapse{{ou.ou}}"
-                      data-parent="#accordion"
-                      class="panel-heading clickable">
-                    <h4 class="panel-title">
-                      {{ou.ou}}
-                      <span class="small">
-                        ({{ou.dn}})
-                      </span>
-                    </h4>
-                    <p class="list-group-item-text">
-                      {{ou.description}}
-                    </p>
-                  </div>
-                  <div id="collapse{{ou.ou}}" class="panel-collapse collapse">
-                    <ul class="list-group" ng-if="ou.groups.length">
-                      <li class="list-group-item clickable"
-                          ng-repeat="group in ou.groups"
-                          ng-show="!list.addGroupUserHasGroup(group)"
-                          ng-click="list.addGroupToUser(group)">
-                        <h5 class="list-group-item-heading">
-                          {{group.cn}}
-                          <span class="small">
-                            ({{group.dn}})
-                          </span>
-                        </h5>
-                        <p class="list-group-item-text">
-                          {{group.description}}
-                        </p>
-                      </li>
-                    </ul>
-                    <div class="panel-body" ng-if="!ou.groups.length">
-                      Keine Gruppen in dieser Kategorie.
-                    </div>
-                  </div> <!-- panel-collapse -->
-                </div> <!-- panel -->
-              </div> <!-- panel-group -->
+              <group-add-list-accordion
+                  group-data="list.groupEditServ.groupData"
+                  user-has-group-fn="list.addGroupUserHasGroup(group)"
+                  user-add-to-group-fn="list.addGroupToUser(group)">
+              </group-add-list-accordion>
             </div> <!-- modal-body -->
             <div class="modal-footer">
             </div>

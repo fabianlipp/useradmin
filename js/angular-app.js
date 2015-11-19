@@ -24,8 +24,10 @@
     return alertsService;
   });
 
-  useradminApp.controller('UserlistController', function($http, alertsService) {
+  useradminApp.controller('UserlistController',
+      function($http, alertsService, groupEditService) {
     this.alerts = alertsService;
+    this.groupEditServ = groupEditService;
 
     this.sortField = 'cn';
     this.sortReverse = false;
@@ -38,11 +40,6 @@
     this.groupAdding = {};
 
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
-    var jsonGroupEl = document.getElementById('jsonGroups');
-    if (jsonGroupEl) {
-      this.groupData = JSON.parse(jsonGroupEl.textContent);
-    }
-
     this.pwd1 = '';
     this.pwd2 = '';
 
@@ -155,64 +152,13 @@
 
     this.addGroupToUser = function(group) {
       var user = this.userAddGroup;
-      var that = this;
-      this.groupAdding[user.dn] = true;
+      groupEditService.addGroupToUser(user, group, this.groupAdding);
       angular.element('#groupAddModal').modal('hide');
-      $http.post('ajax/addUserGroup.json.php',
-          {'userdn': this.userAddGroup.dn,
-            'groupdn': group.dn})
-          .then(function(response) {
-            // success
-            console.log("success");
-            console.log(response);
-            user.details.groups.push(group);
-            user.groupDns[group.dn] = group;
-            that.groupAdding[user.dn] = false;
-            that.alerts.push(
-              {type: 'success',
-                msg: 'Benutzer ' + user.cn + ' zu Gruppe '
-                    + group.cn + ' hinzugefügt',
-              dismiss: 5000});
-          }, function(response) {
-            // error
-            console.log("error");
-            console.log(response);
-            that.groupAdding[user.dn] = false;
-            that.alerts.push(
-              {type: 'danger',
-                msg: 'Konnte Benutzer ' + user.cn + ' nicht zu Gruppe '
-                    + group.cn + ' hinzufügen: ' + response.data.detail});
-          });
     };
 
     this.removeGroupFromUser = function(user, group) {
-      var that = this;
+      groupEditService.removeGroupFromUser(user, group, this.groupRemoving);
       this.groupRemoving[user.dn][group.dn] = true;
-      $http.post('ajax/removeUserGroup.json.php',
-          {'userdn': user.dn,
-            'groupdn': group.dn})
-          .then(function(response) {
-            // success
-            console.log("success");
-            console.log(response);
-            user.details.groups.splice(user.details.groups.indexOf(group), 1)
-            delete user.groupDns[group.dn];
-            that.groupRemoving[user.dn][group.dn] = false;
-            that.alerts.push(
-              {type: 'success',
-                msg: 'Benutzer ' + user.cn + ' aus Gruppe '
-                    + group.cn + ' entfernt',
-              dismiss: 5000});
-          }, function(response) {
-            // error
-            console.log("error");
-            console.log(response);
-            that.groupRemoving[user.dn][group.dn] = false;
-            that.alerts.push(
-              {type: 'danger',
-                msg: 'Konnte Benutzer ' + user.cn + ' nicht aus Gruppe '
-                    + group.cn + ' entfernen: ' + response.data.detail});
-          });
     };
 
     this.groupIsRemoving = function(user, group) {
@@ -288,6 +234,86 @@
         };
       }
     };
+  });
+
+
+
+  useradminApp.directive('groupAddListAccordion', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/groupAddList.html',
+      scope: {
+        groupData: '=groupData',
+        userHasGroupFn: '&userHasGroupFn',
+        userAddToGroupFn: '&userAddToGroupFn'
+      }
+    };
+  });
+
+
+
+  useradminApp.factory('groupEditService',
+      function($http, alertsService) {
+    alerts = alertsService;
+    var serv = {};
+
+    var jsonGroupEl = document.getElementById('jsonGroups');
+    if (jsonGroupEl) {
+      serv.groupData = JSON.parse(jsonGroupEl.textContent);
+    }
+
+    serv.addGroupToUser = function(user, group, groupAdding) {
+      groupAdding[user.dn] = true;
+      angular.element('#groupAddModal').modal('hide');
+      $http.post('ajax/addUserGroup.json.php',
+          {'userdn': user.dn,
+            'groupdn': group.dn})
+          .then(function(response) {
+            // success
+            user.details.groups.push(group);
+            user.groupDns[group.dn] = group;
+            groupAdding[user.dn] = false;
+            alerts.push(
+              {type: 'success',
+                msg: 'Benutzer ' + user.cn + ' zu Gruppe '
+                    + group.cn + ' hinzugefügt',
+              dismiss: 5000});
+          }, function(response) {
+            // error
+            groupAdding[user.dn] = false;
+            alerts.push(
+              {type: 'danger',
+                msg: 'Konnte Benutzer ' + user.cn + ' nicht zu Gruppe '
+                    + group.cn + ' hinzufügen: ' + response.data.detail});
+          });
+    };
+
+    serv.removeGroupFromUser = function(user, group, groupRemoving) {
+      groupRemoving[user.dn][group.dn] = true;
+      $http.post('ajax/removeUserGroup.json.php',
+          {'userdn': user.dn,
+            'groupdn': group.dn})
+          .then(function(response) {
+            // success
+            user.details.groups.splice(user.details.groups.indexOf(group), 1)
+            delete user.groupDns[group.dn];
+            groupRemoving[user.dn][group.dn] = false;
+            alerts.push(
+              {type: 'success',
+                msg: 'Benutzer ' + user.cn + ' aus Gruppe '
+                    + group.cn + ' entfernt',
+              dismiss: 5000});
+          }, function(response) {
+            // error
+            groupRemoving[user.dn][group.dn] = false;
+            alerts.push(
+              {type: 'danger',
+                msg: 'Konnte Benutzer ' + user.cn + ' nicht aus Gruppe '
+                    + group.cn + ' entfernen: ' + response.data.detail});
+          });
+    };
+
+    return serv;
   });
 
 
