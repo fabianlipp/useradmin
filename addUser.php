@@ -24,9 +24,9 @@ define('USE_ANGULAR', true);
       <div id="alert-container" class="container">
         <div class="col-xs-3"></div>
         <div class="col-xs-6">
-          <uib-alert ng-repeat="alert in adduser.alerts"
+          <uib-alert ng-repeat="alert in adduser.alerts.alertList"
               type="{{alert.type}}"
-              close="adduser.closeAlert($index)"
+              close="alert.close()"
               dismiss-on-timeout="{{alert.dismiss}}">
             {{alert.msg}}
           </uib-alert>

@@ -3,7 +3,7 @@ require_once(__DIR__ . '/../config.inc.php');
 
 require_once(BASE_PATH . 'ldap.inc.php');
 require_once(BASE_PATH . 'classes/user.inc.php');
-require_once(BASE_PATH . 'classes/group.php');
+require_once(BASE_PATH . 'classes/group.inc.php');
 session_start();
 
 $postdata = file_get_contents("php://input");

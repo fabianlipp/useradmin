@@ -6,7 +6,27 @@
     editableOptions.theme = 'bs3';
   });
 
-  useradminApp.controller('UserlistController', function($http) {
+  useradminApp.factory('alertsService', function() {
+    var alertsService = {};
+
+    alertsService.alertList = [];
+    alertsService.closeAlert = function(index) {
+      alertsService.alertList.splice(index, 1);
+    };
+    alertsService.push = function(msg) {
+      msg.close = function() {
+        var list = alertsService.alertList;
+        list.splice(list.indexOf(msg), 1);
+      };
+      alertsService.alertList.push(msg);
+    }
+
+    return alertsService;
+  });
+
+  useradminApp.controller('UserlistController', function($http, alertsService) {
+    this.alerts = alertsService;
+
     this.sortField = 'cn';
     this.sortReverse = false;
     this.searchText = '';
@@ -23,14 +43,8 @@
       this.groupData = JSON.parse(jsonGroupEl.textContent);
     }
 
-    this.alerts = [];
-    this.closeAlert = function(index) {
-      this.alerts.splice(index, 1);
-    };
-
     this.pwd1 = '';
     this.pwd2 = '';
-
 
     for (var i = 0; i < this.userData.length; i++) {
       var user = this.userData[i];
@@ -285,7 +299,9 @@
 
 
 
-  useradminApp.controller('AddUserController', function($http) {
+  useradminApp.controller('AddUserController', function($http, alertsService) {
+    this.alerts = alertsService;
+
     this.step = 1;
     this.user = {
       "cn": "",
@@ -296,11 +312,6 @@
 
     this.groupData = JSON.parse(
         document.getElementById('jsonGroups').textContent);
-
-    this.alerts = [];
-    this.closeAlert = function(index) {
-      this.alerts.splice(index, 1);
-    };
 
     this.completeStep1 = function() {
       var that = this;
