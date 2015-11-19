@@ -17,8 +17,8 @@
       <ul class="list-group" ng-if="ou.groups.length">
         <li class="list-group-item clickable"
             ng-repeat="group in ou.groups"
-            ng-show="!userHasGroupFn({group: group})"
-            ng-click="userAddToGroupFn({group: group})">
+            ng-show="!editUserService.userHasGroup(group)"
+            ng-click="editUserService.addGroupToUser(group)">
           <h5 class="list-group-item-heading">
             {{group.cn}}
             <span class="small">

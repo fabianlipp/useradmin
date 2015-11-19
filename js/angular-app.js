@@ -25,19 +25,16 @@
   });
 
   useradminApp.controller('UserlistController',
-      function($http, alertsService, groupEditService) {
+      function($http, alertsService, groupEditService, editUserService) {
     this.alerts = alertsService;
     this.groupEditServ = groupEditService;
+    this.editUserServ = editUserService;
 
     this.sortField = 'cn';
     this.sortReverse = false;
     this.searchText = '';
 
-    this.userAddGroup = false;
     this.pwChangeUser = false;
-
-    this.groupRemoving = {};
-    this.groupAdding = {};
 
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
     this.pwd1 = '';
@@ -51,7 +48,6 @@
       user.loading = false;
       user.pwChanged = false;
       user.pwChanging = false;
-      this.groupRemoving[user.dn] = {};
     }
 
     this.sortClick = function(field) {
@@ -86,87 +82,6 @@
 
     this.formatJson = function(json_str) {
       return JSON.stringify(json_str, undefined, 2);
-    };
-
-    this.updateMail = function(data, form, user) {
-      form.loading = true;
-      form.success = false;
-      form.fail = false;
-      $http.post('ajax/changeUserDetail.json.php',
-          {'dn': user.dn,
-            'newMail': data})
-          .then(function(response) {
-            // success
-            form.loading = false;
-            form.success = true;
-            if (typeof response.data.mail != 'undefined') {
-              user.mail = response.data.mail;
-            }
-          }, function(response) {
-            // error
-            form.loading = false;
-            form.fail = true;
-            if (typeof response.data.mail != 'undefined') {
-              user.mail = response.data.mail;
-            }
-          });
-      return false;
-    };
-
-    this.updateDisplayName = function(data, form, user) {
-      form.loading = true;
-      form.success = false;
-      form.fail = false;
-      $http.post('ajax/changeUserDetail.json.php',
-          {'dn': user.dn,
-            'newDisplayName': data})
-          .then(function(response) {
-            // success
-            form.loading = false;
-            form.success = true;
-            if (typeof response.data.displayName != 'undefined') {
-              user.displayName = response.data.displayName;
-            }
-          }, function(response) {
-            // error
-            form.loading = false;
-            form.fail = true;
-            if (typeof response.data.displayName != 'undefined') {
-              user.displayName = response.data.displayName;
-            }
-          });
-      return false;
-    };
-
-    this.addGroup = function(user) {
-      this.userAddGroup = user;
-      angular.element('#groupAddModal').modal('show');
-    };
-
-    this.addGroupUserHasGroup = function(group) {
-      if (!this.userAddGroup) {
-        return false;
-      }
-      return this.userAddGroup.groupDns.hasOwnProperty(group.dn);
-    };
-
-    this.addGroupToUser = function(group) {
-      var user = this.userAddGroup;
-      groupEditService.addGroupToUser(user, group, this.groupAdding);
-      angular.element('#groupAddModal').modal('hide');
-    };
-
-    this.removeGroupFromUser = function(user, group) {
-      groupEditService.removeGroupFromUser(user, group, this.groupRemoving);
-      this.groupRemoving[user.dn][group.dn] = true;
-    };
-
-    this.groupIsRemoving = function(user, group) {
-      return this.groupRemoving[user.dn][group.dn];
-    };
-
-    this.groupIsAdding = function(user) {
-      return this.groupAdding[user.dn];
     };
 
     this.showChangePw = function(user) {
@@ -238,14 +153,15 @@
 
 
 
-  useradminApp.directive('groupAddListAccordion', function() {
+  useradminApp.directive('usradmGroupAddListAccordion', function(editUserService) {
     return {
       restrict: 'E',
       templateUrl: 'templates/groupAddList.html',
       scope: {
         groupData: '=groupData',
-        userHasGroupFn: '&userHasGroupFn',
-        userAddToGroupFn: '&userAddToGroupFn'
+      },
+      link: function(scope, elemet, attrs) {
+        scope.editUserService = editUserService;
       }
     };
   });
@@ -314,6 +230,134 @@
     };
 
     return serv;
+  });
+
+
+
+  useradminApp.directive('usradmEditUser', function(editUserService) {
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/editUser.html',
+      scope: {
+        user: '=user',
+        expandClickFn: '&expandClick'
+      },
+      link: function(scope, elemet, attrs) {
+        scope.editUserService = editUserService;
+      }
+    };
+  });
+
+
+
+  useradminApp.factory('editUserService',
+      function($http, alertsService, groupEditService) {
+    var alerts = alertsService;
+    var groupEditServ = groupEditService;
+    var userAddGroup = false;
+    var groupAdding = {};
+    var groupRemoving = {};
+
+    var serv = {};
+
+    serv.updateDisplayName = function(data, form, user) {
+      form.loading = true;
+      form.success = false;
+      form.fail = false;
+      $http.post('ajax/changeUserDetail.json.php',
+          {'dn': user.dn,
+            'newDisplayName': data})
+          .then(function(response) {
+            // success
+            form.loading = false;
+            form.success = true;
+            if (typeof response.data.displayName != 'undefined') {
+              user.displayName = response.data.displayName;
+            }
+          }, function(response) {
+            // error
+            form.loading = false;
+            form.fail = true;
+            if (typeof response.data.displayName != 'undefined') {
+              user.displayName = response.data.displayName;
+            }
+          });
+      return false;
+    };
+
+    serv.updateMail = function(data, form, user) {
+      form.loading = true;
+      form.success = false;
+      form.fail = false;
+      $http.post('ajax/changeUserDetail.json.php',
+          {'dn': user.dn,
+            'newMail': data})
+          .then(function(response) {
+            // success
+            form.loading = false;
+            form.success = true;
+            if (typeof response.data.mail != 'undefined') {
+              user.mail = response.data.mail;
+            }
+          }, function(response) {
+            // error
+            form.loading = false;
+            form.fail = true;
+            if (typeof response.data.mail != 'undefined') {
+              user.mail = response.data.mail;
+            }
+          });
+      return false;
+    };
+
+    serv.addGroup = function(user) {
+      userAddGroup = user;
+      angular.element('#groupAddModal').modal('show');
+    };
+
+    serv.userHasGroup = function(group) {
+      if (!userAddGroup) {
+        return false;
+      }
+      return userAddGroup.groupDns.hasOwnProperty(group.dn);
+    };
+
+    serv.addGroupToUser = function(group) {
+      groupEditService.addGroupToUser(userAddGroup, group, groupAdding);
+      angular.element('#groupAddModal').modal('hide');
+    };
+
+    serv.removeGroupFromUser = function(user, group) {
+      if (!(user.dn in groupRemoving)) {
+        groupRemoving[user.dn] = {};
+      }
+      groupRemoving[user.dn][group.dn] = true;
+      groupEditService.removeGroupFromUser(user, group, groupRemoving);
+    };
+
+    serv.groupIsRemoving = function(user, group) {
+      return (user.dn in groupRemoving
+          && group.dn in groupRemoving[user.dn]
+          && groupRemoving[user.dn][group.dn]);
+    };
+
+    serv.groupIsAdding = function(user) {
+      return (user.dn in groupAdding && groupAdding[user.dn]);
+    };
+
+    return serv;
+  });
+
+
+
+  useradminApp.directive('usradmGroupAddModal', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/groupAddModal.html',
+      scope: {
+        groupData: '=groupData'
+      }
+    };
   });
 
 

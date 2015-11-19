@@ -91,93 +91,17 @@ define('USE_ANGULAR', true);
         <!-- Details für Benutzer -->
         <tr ng-repeat-end="" ng-if="user.expanded">
           <td colspan="3">
-            <div class="well">
-              <a href="#" class="close" aria-label="close"
-                  ng-click="list.expandClick(user)">
-                &times;
-              </a>
-              <div style="text-align: center" ng-if="user.loading">
-                <span class="fa fa-refresh"
-                    ng-class="{'fa-spin' : user.loading}"></span>
-              </div>
-              <table class="userdetails" ng-if="!user.loading">
-                <tr>
-                  <th>cn:</th>
-                  <td>{{user.cn}}</td>
-                </tr>
-                <tr>
-                  <th>Name:</th>
-                  <td>
-                    <usradm-edit-text usradm-field="user.displayName"
-                        onbeforesave="list.updateDisplayName(data, form, user)">
-                    </usradm-edit-text>
-                  </td>
-                </tr>
-                <tr>
-                  <th>E-Mail:</th>
-                  <td>
-                    <usradm-edit-text usradm-field="user.mail"
-                        onbeforesave="list.updateMail(data, form, user)">
-                    </usradm-edit-text>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="lblGruppen">Gruppen:</th>
-                  <td>
-                    <ul ng-if="user.details.groups.length">
-                      <li ng-repeat="group in user.details.groups">
-                        {{group.cn}}
-                        <span class="small">({{group.description}})</span>
-                        <span class="fa fa-refresh"
-                            ng-show="list.groupIsRemoving(user, group)"
-                            ng-class="{'fa-spin' :
-                                list.groupIsRemoving(user, group)}"></span>
-                        <span class="glyphicon glyphicon-minus clickable"
-                            ng-click="list.removeGroupFromUser(user, group)">
-                        </span>
-                      </li>
-                    </ul>
-                        <span class="fa fa-refresh"
-                            ng-show="list.groupIsAdding(user)"
-                            ng-class="{'fa-spin' :
-                                list.groupIsAdding(user)}"></span>
-                    <span class="glyphicon glyphicon-plus clickable"
-                        ng-click="list.addGroup(user)">
-                    </span>
-                  </td>
-                </tr>
-              </table>
-            </div>
+            <usradm-edit-user user="user"
+              expand-click="list.expandClick(user)">
+            </usradm-edit-user>
           </td>
         </tr>
       </table>
 
       <!-- Modal-Dialog zur Gruppenauswahl zum Hinzufügen -->
-      <div id="groupAddModal" class="modal fade" role="dialog">
-          <div class="modal-dialog">
-
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close"
-                  data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Gruppe hinzufügen</h4>
-            </div>
-            <div class="modal-body">
-              <group-add-list-accordion
-                  group-data="list.groupEditServ.groupData"
-                  user-has-group-fn="list.addGroupUserHasGroup(group)"
-                  user-add-to-group-fn="list.addGroupToUser(group)">
-              </group-add-list-accordion>
-            </div> <!-- modal-body -->
-            <div class="modal-footer">
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- DEBUG -->
-      <!--<p><pre><?php print_r($users); ?></pre></p> -->
+      <usradm-group-add-modal
+          group-data="list.groupEditServ.groupData">
+      </usradm-group-add-modal>
     </div>
 
     <!-- data for the user list (is then parsed by AngularJS) -->

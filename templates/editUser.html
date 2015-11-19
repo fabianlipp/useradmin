@@ -1,0 +1,57 @@
+<div class="well">
+  <a href="#" class="close" aria-label="close"
+      ng-click="expandClickFn({user: user})">
+    &times;
+  </a>
+  <div style="text-align: center" ng-if="user.loading">
+    <span class="fa fa-refresh"
+        ng-class="{'fa-spin' : user.loading}"></span>
+  </div>
+  <table class="userdetails" ng-if="!user.loading">
+    <tr>
+      <th>cn:</th>
+      <td>{{user.cn}}</td>
+    </tr>
+    <tr>
+      <th>Name:</th>
+      <td>
+        <usradm-edit-text usradm-field="user.displayName"
+            onbeforesave="editUserService.updateDisplayName(data, form, user)">
+        </usradm-edit-text>
+      </td>
+    </tr>
+    <tr>
+      <th>E-Mail:</th>
+      <td>
+        <usradm-edit-text usradm-field="user.mail"
+            onbeforesave="editUserService.updateMail(data, form, user)">
+        </usradm-edit-text>
+      </td>
+    </tr>
+    <tr>
+      <th class="lblGruppen">Gruppen:</th>
+      <td>
+        <ul ng-if="user.details.groups.length">
+          <li ng-repeat="group in user.details.groups">
+            {{group.cn}}
+            <span class="small">({{group.description}})</span>
+            <span class="fa fa-refresh"
+                ng-show="editUserService.groupIsRemoving(user, group)"
+                ng-class="{'fa-spin' :
+                    editUserService.groupIsRemoving(user, group)}"></span>
+            <span class="glyphicon glyphicon-minus clickable"
+                ng-click="editUserService.removeGroupFromUser(user, group)">
+            </span>
+          </li>
+        </ul>
+            <span class="fa fa-refresh"
+                ng-show="editUserService.groupIsAdding(user)"
+                ng-class="{'fa-spin' :
+                    editUserService.groupIsAdding(user)}"></span>
+        <span class="glyphicon glyphicon-plus clickable"
+            ng-click="editUserService.addGroup(user)">
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>
