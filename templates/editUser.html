@@ -1,5 +1,6 @@
 <div class="well">
   <a href="#" class="close" aria-label="close"
+      ng-if="closable"
       ng-click="expandClickFn({user: user})">
     &times;
   </a>
@@ -31,8 +32,8 @@
     <tr>
       <th class="lblGruppen">Gruppen:</th>
       <td>
-        <ul ng-if="user.details.groups.length">
-          <li ng-repeat="group in user.details.groups">
+        <ul ng-if="user.groups.length">
+          <li ng-repeat="group in user.groups">
             {{group.cn}}
             <span class="small">({{group.description}})</span>
             <span class="fa fa-refresh"

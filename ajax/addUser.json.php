@@ -33,6 +33,9 @@ $retval = array();
 if ($newuser->addToDirectory($ldapconn) === true) {
   // success
   http_response_code(200);
+  $user = User::readUser($ldapconn, $newuser->dn);
+  $user->loadGroupInformation();
+  $retval["user"] = $user;
 } else {
   http_response_code(500);
   $retval["detail"] = ldap_error($ldapconn);

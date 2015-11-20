@@ -92,6 +92,7 @@ define('USE_ANGULAR', true);
         <tr ng-repeat-end="" ng-if="user.expanded">
           <td colspan="3">
             <usradm-edit-user user="user"
+              closable="true"
               expand-click="list.expandClick(user)">
             </usradm-edit-user>
           </td>

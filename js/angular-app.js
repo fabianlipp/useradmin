@@ -43,7 +43,6 @@
     for (var i = 0; i < this.userData.length; i++) {
       var user = this.userData[i];
       user.expanded = false;
-      user.details = null;
       user.detailsLoaded = false;
       user.loading = false;
       user.pwChanged = false;
@@ -70,11 +69,11 @@
       $http.get('ajax/getUserDetails.json.php',
           {params: {dn: user.dn}})
           .success(function(data) {
-        user.details = data;
+        user.groups = data.groups;
         user.detailsLoaded = true;
         user.loading = false;
         user.groupDns = {};
-        user.details.groups.map(function(item) {
+        user.groups.map(function(item) {
           user.groupDns[item.dn] = item;
         });
       });
@@ -186,7 +185,7 @@
             'groupdn': group.dn})
           .then(function(response) {
             // success
-            user.details.groups.push(group);
+            user.groups.push(group);
             user.groupDns[group.dn] = group;
             groupAdding[user.dn] = false;
             alerts.push(
@@ -211,7 +210,7 @@
             'groupdn': group.dn})
           .then(function(response) {
             // success
-            user.details.groups.splice(user.details.groups.indexOf(group), 1)
+            user.groups.splice(user.groups.indexOf(group), 1)
             delete user.groupDns[group.dn];
             groupRemoving[user.dn][group.dn] = false;
             alerts.push(
@@ -240,6 +239,7 @@
       templateUrl: 'templates/editUser.html',
       scope: {
         user: '=user',
+        closable: '@',
         expandClickFn: '&expandClick'
       },
       link: function(scope, elemet, attrs) {
@@ -369,33 +369,39 @@
 
 
 
-  useradminApp.controller('AddUserController', function($http, alertsService) {
+  useradminApp.controller('AddUserController',
+      function($http, alertsService, groupEditService) {
     this.alerts = alertsService;
+    this.groupEditServ = groupEditService;
 
     this.step = 1;
-    this.user = {
+    this.userform = {
       "cn": "",
       "mail": "",
       "sn": "",
       "givenName": ""
     };
 
-    this.groupData = JSON.parse(
-        document.getElementById('jsonGroups').textContent);
+    this.user = null;
 
     this.completeStep1 = function() {
       var that = this;
       $http.post('ajax/addUser.json.php',
-          {'cn': this.user.cn,
-            'mail':  this.user.mail,
-            'sn':  this.user.sn,
-            'givenName':  this.user.givenName})
+          {'cn': this.userform.cn,
+            'mail':  this.userform.mail,
+            'sn':  this.userform.sn,
+            'givenName':  this.userform.givenName})
         .then(function(response) {
             // success
             that.alerts.push(
               {type: 'success',
                 msg: 'Benutzer angelegt',
               dismiss: 5000});
+            that.user = response.data.user;
+            that.user.groupDns = {};
+            that.user.groups.map(function(item) {
+              that.user.groupDns[item.dn] = item;
+            });
             that.step = 2;
           }, function(response) {
             // error
