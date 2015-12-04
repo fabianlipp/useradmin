@@ -13,5 +13,10 @@ define('DUMMY_USER_DN', 'cn=dummy,dc=example,dc=com');
 
 define('PAGETITLE', 'example.com User Admin');
 
+define('MAIL_SENDER', 'webteam@example.com');
+define('MAIL_SUBJECT', 'Your account für example.com');
+define('MAIL_TEMPLATE', 'mail-templates/mail-newuser.tpl');
+
+
 
 ?>

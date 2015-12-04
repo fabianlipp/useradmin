@@ -17,6 +17,7 @@ require_once('config.inc.php');
     <link rel="stylesheet" href="css/useradmin.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/markup.min.js"></script>
 <?php if (defined('USE_ANGULAR')) { ?>
     <script src="js/angular.min.js"></script>
     <script src="js/ui-bootstrap-tpls.min.js"></script>

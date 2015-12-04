@@ -35,7 +35,11 @@ if ($newuser->addToDirectory($ldapconn) === true) {
   http_response_code(200);
   $user = User::readUser($ldapconn, $newuser->dn);
   $user->loadGroupInformation();
+
+  $newpassword = User::generateRandomPassword();
+  $user->changePassword($newpassword);
   $retval["user"] = $user;
+  $retval["password"] = $newpassword;
 } else {
   http_response_code(500);
   $retval["detail"] = ldap_error($ldapconn);

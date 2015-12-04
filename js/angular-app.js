@@ -374,6 +374,11 @@
     this.alerts = alertsService;
     this.groupEditServ = groupEditService;
 
+    var mailSettingsEl = document.getElementById('mailSettings');
+    if (mailSettingsEl) {
+      this.mailSettings = JSON.parse(mailSettingsEl.textContent);
+    }
+
     this.step = 1;
     this.userform = {
       "cn": "",
@@ -383,6 +388,19 @@
     };
 
     this.user = null;
+    this.userpassword = null;
+
+    this.mailform = {
+      "sender": this.mailSettings.sender,
+      "recipient": "",
+      "subject": this.mailSettings.subject,
+      "mailbody": ""
+    };
+
+    this.mailsending = false;
+    this.mailsuccess = false;
+    this.mailfailure = false;
+
 
     this.completeStep1 = function() {
       var that = this;
@@ -397,6 +415,7 @@
               {type: 'success',
                 msg: 'Benutzer angelegt',
               dismiss: 5000});
+            that.userpassword = response.data.password;
             that.user = response.data.user;
             that.user.groupDns = {};
             that.user.groups.map(function(item) {
@@ -405,12 +424,51 @@
             that.step = 2;
           }, function(response) {
             // error
+            var responsemsg;
+            if (typeof response.data == 'object') {
+              responsemsg = response.data.detail;
+            } else {
+              responsemsg = response.data;
+            }
             that.alerts.push(
               {type: 'danger',
                 msg: 'Benutzer konnte nicht angelegt werden: '
-                    + response.data.detail});
+                    + responsemsg});
           });
 
-    }
+    };
+
+    this.completeStep2 = function() {
+      var f = this.mailform;
+      f.recipient = this.user.mail;
+      var context = {
+        user: this.user,
+        sendername: this.mailSettings.sendername,
+        userpassword: this.userpassword
+      };
+      f.mailbody = Mark.up(this.mailSettings.template, context);
+      console.log(f.mailbody);
+      this.step = 3;
+    };
+
+    this.sendMail = function() {
+      this.mailsending = true;
+      this.mailsuccess = false;
+      this.mailfailure = false;
+      var that = this;
+      $http.post('ajax/sendMail.json.php',
+          {'mailform': this.mailform
+            })
+        .then(function(response) {
+          that.mailsuccess = true;
+          that.mailsending = false;
+        }, function(response) {
+          that.mailfailure = true;
+          that.mailsending = false;
+        });
+
+    };
+
   });
+
 })();

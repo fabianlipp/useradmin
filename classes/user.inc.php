@@ -136,6 +136,18 @@ class User {
 
 
 
+  public static function generateRandomPassword() {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyz'
+      . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randstring = '';
+    for ($i = 0; $i < 15; $i++) {
+            $randstring .= $characters[rand(0, strlen($characters))];
+    }
+    return $randstring;
+  }
+
+
+
   public function addToDirectory($ldapconn) {
     $this->ldapconn = $ldapconn;
     $entry = array();

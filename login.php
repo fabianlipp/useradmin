@@ -1,6 +1,7 @@
 <?php
 require_once('config.inc.php');
 require_once(BASE_PATH . 'ldap.inc.php');
+require_once(BASE_PATH . 'classes/user.inc.php');
 session_start();
 
 
@@ -12,14 +13,17 @@ if (isset($_POST['signIn'])) {
   // Test bind to LDAP server
   $ldapconn = ldap_connect_options();
   $bind_success = ldap_bind($ldapconn, $ldapDn, $password);
-  ldap_close($ldapconn);
   if ($bind_success) {
+    $user = User::readUser($ldapconn, $ldapDn);
     $_SESSION['ldapDn'] = $ldapDn;
     $_SESSION['password'] = $password;
+    $_SESSION['displayName'] = $user->displayName;
     session_write_close();
+    ldap_close($ldapconn);
     header('Location: index.php');
     exit;
   }
+  @ldap_close($ldapconn);
 }
 
 ?>
