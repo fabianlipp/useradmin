@@ -28,3 +28,4 @@ require_once('config.inc.php');
 <?php } ?>
 <?php if (isset($filespecific_js)) { echo $filespecific_js; } ?>
   </head>
+  <body>

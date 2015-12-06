@@ -13,10 +13,7 @@ ldap_close($ldapconn);
 
 ?>
 <?php include('html_head.inc.php'); ?>
-
-  <body>
-
-    <?php include('navigation.inc.php'); ?>
+<?php include('navigation.inc.php'); ?>
 
     <div class="container">
       <h1>My First Bootstrap Page</h1>

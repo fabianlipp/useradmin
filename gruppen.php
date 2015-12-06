@@ -20,9 +20,6 @@ define('USE_ANGULAR', true);
 
 ?>
 <?php include('html_head.inc.php'); ?>
-
-  <body>
-
 <?php include('navigation.inc.php'); ?>
 
     <div class="container" ng-controller="GrouplistController as list">

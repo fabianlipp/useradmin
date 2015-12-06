@@ -28,8 +28,6 @@ if (isset($_POST['signIn'])) {
 
 ?>
 <?php include('html_head.inc.php'); ?>
-
-  <body>
     <div class="container">
       <form class="form-signin" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
