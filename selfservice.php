@@ -9,7 +9,7 @@ define('USE_ANGULAR', true);
     <div class="container" ng-controller="SelfServiceController as serv">
       <h1><?php echo PAGETITLE . ' &mdash; Self Service'; ?></h1>
 
-      <div class="container" ng-hide="serv.loggedIn">
+      <div id="step1" class="container" ng-if="!serv.loggedIn">
         <form class="form-signin">
           <h2 class="form-signin-heading">Bitte einloggen</h2>
           <label for="inputCn" class="sr-only">Benutzername</label>
@@ -31,7 +31,7 @@ define('USE_ANGULAR', true);
         </div>
       </div>
 
-      <div class="container" ng-if="serv.loggedIn">
+      <div id="step2" class="container" ng-if="serv.loggedIn">
         <usradm-edit-user user="serv.user"
           closable="false" editable="false">
         </usradm-edit-user>

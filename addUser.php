@@ -34,7 +34,7 @@ define('USE_ANGULAR', true);
       <h1>User anlegen</h1>
 
       <!-- Step 1: User anlegen -->
-      <div ng-show="adduser.step === 1">
+      <div id="step1" ng-if="adduser.step === 1">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <label class="control-label col-sm-2" for="pwd">Vorname:</label>
@@ -76,7 +76,7 @@ define('USE_ANGULAR', true);
       </div>
 
       <!-- Step 2: Gruppen zuordnen -->
-      <div ng-show="adduser.step === 2" ng-if="adduser.user">
+      <div id="step2" ng-if="adduser.user && adduser.step === 2">
         <usradm-edit-user user="adduser.user" editable="true">
         </usradm-edit-user>
         <button class="btn btn-primary pull-right"
@@ -91,7 +91,7 @@ define('USE_ANGULAR', true);
       </usradm-group-add-modal>
 
       <!-- Step 3: Mail an neuen User -->
-      <div ng-show="adduser.step === 3" ng-if="adduser.user">
+      <div id="step3" ng-if="adduser.user && adduser.step === 3">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <label class="control-label col-sm-2" for="sender">Absender:</label>

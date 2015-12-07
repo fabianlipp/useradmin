@@ -290,7 +290,7 @@
             }
           });
       return false;
-    }
+    };
 
     serv.addGroup = function(user) {
       userAddGroup = user;

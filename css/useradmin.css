@@ -80,3 +80,71 @@ div#alert-container {
   margin-left: 5px;
 }
 
+
+
+
+
+/* ANIMATION STYLINGS
+============================================================================= */
+
+/* basic styling for entering and leaving */
+/* left and right added to ensure full width */
+#step1.ng-enter,
+#step2.ng-enter,
+#step3.ng-enter,
+#step1.ng-leave,
+#step2.ng-leave,
+#step3.ng-leave {
+  position:absolute;
+  left:30px;
+  right:30px;
+  transition:1.0s all ease;
+  -moz-transition:1.0s all ease;
+  -webkit-transition:1.0s all ease;
+}
+
+/* enter animation */
+#step1.ng-enter,
+#step2.ng-enter,
+#step3.ng-enter {
+    -webkit-animation:slideInRight 1.0s both ease;
+    -moz-animation:slideInRight 1.0s both ease;
+    animation:slideInRight 1.0s both ease;
+}
+
+/* leave animation */
+#step1.ng-leave,
+#step2.ng-leave,
+#step3.ng-leave {
+    -webkit-animation:slideOutLeft 1.0s both ease;
+    -moz-animation:slideOutLeft 1.0s both ease;
+    animation:slideOutLeft 1.0s both ease;
+}
+
+/* ANIMATIONS
+============================================================================= */
+/* slide out to the left */
+@keyframes slideOutLeft {
+    to      { transform: translateX(-200%); }
+}
+@-moz-keyframes slideOutLeft {
+    to      { -moz-transform: translateX(-200%); }
+}
+@-webkit-keyframes slideOutLeft {
+    to      { -webkit-transform: translateX(-200%); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+    from    { transform:translateX(200%); }
+    to      { transform: translateX(0); }
+}
+@-moz-keyframes slideInRight {
+    from    { -moz-transform:translateX(200%); }
+    to      { -moz-transform: translateX(0); }
+}
+@-webkit-keyframes slideInRight {
+    from    { -webkit-transform:translateX(200%); }
+    to      { -webkit-transform: translateX(0); }
+}
+
