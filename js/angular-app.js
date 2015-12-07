@@ -94,7 +94,7 @@
 
     this.isSamePw = function() {
       return (this.pwd1 == this.pwd2);
-    }
+    };
 
     this.changePassword = function() {
       if (!this.pwd1 || this.pwd1 != this.pwd2) {
@@ -239,11 +239,12 @@
       templateUrl: 'templates/editUser.html',
       scope: {
         user: '=user',
-        closable: '@',
         expandClickFn: '&expandClick'
       },
       link: function(scope, elemet, attrs) {
         scope.editUserService = editUserService;
+        scope.closable = (attrs.closable === 'true');
+        scope.editable = (attrs.editable === 'true');
       }
     };
   });
@@ -468,7 +469,72 @@
         });
 
     };
-
   });
 
+
+
+  useradminApp.controller('SelfServiceController',
+      function($http) {
+
+    this.cn = "";
+    this.pw = "";
+    this.loggedIn = false;
+    this.loginMessage = "";
+
+    this.user = null;
+
+    this.pwd1 = "";
+    this.pwd2 = "";
+    this.pwChanging = false;
+    this.pwChanged = false;
+    this.pwChangeFailed = false;
+    this.pwChangeMessage = "";
+
+    this.login = function() {
+      var that = this;
+      $http.post('ajax/selfserviceLogin.json.php',
+          {'cn': this.cn,
+            'pw': this.pw})
+        .then(function(response) {
+          that.loggedIn = true;
+          that.user = response.data;
+          that.loginMessage = "";
+        }, function(response) {
+          if (response.status == 403) {
+            that.loginMessage = "Ungültiger Benutzername oder Passwort";
+          } else {
+            that.loginMessage = "Login nicht erfolgreich.";
+          }
+        });
+    };
+
+    this.isSamePw = function() {
+      return (this.pwd1 == this.pwd2);
+    };
+
+    this.formDisable = function() {
+      return this.pwChanging || this.pwChanged || this.pwChangeFailed;
+    };
+
+    this.changePassword = function() {
+      if (!this.pwd1 || this.pwd1 != this.pwd2 || this.pwChanging) {
+        return;
+      }
+      var that = this;
+      this.pwChanging = true;
+      this.pwChanged = false;
+      $http.post('ajax/changePassword.json.php',
+          {'dn': this.user.dn,
+            'newPassword': this.pwd1},
+          {params: {'destroySession': true}})
+        .then(function(response) {
+          that.pwChanging = false;
+          that.pwChanged = true;
+        }, function(response) {
+          that.pwChangeMessage = response.data.message;
+          that.pwChanging = false;
+          that.pwChangeFailed = true;
+        });
+    };
+  });
 })();

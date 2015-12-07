@@ -77,7 +77,7 @@ define('USE_ANGULAR', true);
 
       <!-- Step 2: Gruppen zuordnen -->
       <div ng-show="adduser.step === 2" ng-if="adduser.user">
-        <usradm-edit-user user="adduser.user">
+        <usradm-edit-user user="adduser.user" editable="true">
         </usradm-edit-user>
         <button class="btn btn-primary pull-right"
             ng-click="adduser.completeStep2()">

@@ -36,6 +36,12 @@ if (!empty($request['newPassword'])) {
   $retval["message"] = "Got no parameter to change";
 }
 
+if (isset($_GET['destroySession']) && $_GET['destroySession']) {
+  // Session löschen
+  $_SESSION = array();
+  session_destroy();
+}
+
 ldap_close($ldapconn);
 echo json_encode($retval);
 
