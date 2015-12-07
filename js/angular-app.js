@@ -70,6 +70,8 @@
           {params: {dn: user.dn}})
           .success(function(data) {
         user.groups = data.groups;
+        user.sn = data.sn;
+        user.givenName = data.givenName;
         user.detailsLoaded = true;
         user.loading = false;
         user.groupDns = {};
@@ -261,55 +263,34 @@
 
     var serv = {};
 
-    serv.updateDisplayName = function(data, form, user) {
+    serv.updateDetail = function(field, data, form, user) {
       form.loading = true;
       form.success = false;
       form.fail = false;
       $http.post('ajax/changeUserDetail.json.php',
           {'dn': user.dn,
-            'newDisplayName': data})
+            'field': field,
+            'newValue': data})
           .then(function(response) {
             // success
             form.loading = false;
             form.success = true;
-            if (typeof response.data.displayName != 'undefined') {
-              user.displayName = response.data.displayName;
+            if (typeof response.data.val != 'undefined') {
+              console.log(user);
+              console.log(field);
+              console.log(user[field]);
+              user[field] = response.data.val;
             }
           }, function(response) {
             // error
             form.loading = false;
             form.fail = true;
-            if (typeof response.data.displayName != 'undefined') {
-              user.displayName = response.data.displayName;
+            if (typeof response.data.val != 'undefined') {
+              user[field] = response.data.val;
             }
           });
       return false;
-    };
-
-    serv.updateMail = function(data, form, user) {
-      form.loading = true;
-      form.success = false;
-      form.fail = false;
-      $http.post('ajax/changeUserDetail.json.php',
-          {'dn': user.dn,
-            'newMail': data})
-          .then(function(response) {
-            // success
-            form.loading = false;
-            form.success = true;
-            if (typeof response.data.mail != 'undefined') {
-              user.mail = response.data.mail;
-            }
-          }, function(response) {
-            // error
-            form.loading = false;
-            form.fail = true;
-            if (typeof response.data.mail != 'undefined') {
-              user.mail = response.data.mail;
-            }
-          });
-      return false;
-    };
+    }
 
     serv.addGroup = function(user) {
       userAddGroup = user;

@@ -20,7 +20,7 @@ class User {
   public static function readUsers($ldapconn) {
     $users = array();
     $search = ldap_list($ldapconn, USER_DN, User::FILTER_USERS,
-        array("cn", "mail", "displayName", "memberOf"));
+        array("cn", "mail", "displayName", "sn", "givenName", "memberOf"));
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
       do {
@@ -34,7 +34,7 @@ class User {
 
   public static function readUser($ldapconn, $dn) {
     $search = ldap_read($ldapconn, $dn, USER::FILTER_USERS,
-        array("cn", "mail", "displayName", "memberOf"));
+        array("cn", "mail", "displayName", "sn", "givenName", "memberOf"));
     if (ldap_count_entries($ldapconn, $search) > 0) {
       $entry = ldap_first_entry($ldapconn, $search);
 
@@ -94,26 +94,13 @@ class User {
 
 
 
-  public function changeMail($newMail) {
+  public function changeField($field, $newValue) {
     $entry = array();
-    $entry["mail"] = $newMail;
+    $entry[$field] = $newValue;
     if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {
-      $this->mail = $newMail;
-      return true;
-    }
-  }
-
-
-
-  public function changeDisplayName($newName) {
-    $entry = array();
-    $entry["displayName"] = $newName;
-    if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
-      return false;
-    } else {
-      $this->displayName = $newName;
+      $this->$field = $newValue;
       return true;
     }
   }

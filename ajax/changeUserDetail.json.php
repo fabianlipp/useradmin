@@ -14,6 +14,16 @@ if (empty($request['dn'])) {
   die("Missing parameter: dn");
 }
 $dn = $request['dn'];
+if (empty($request['field'])) {
+  http_response_code(400);
+  die("Missing parameter: field");
+}
+$field = $request['field'];
+if (empty($request['newValue'])) {
+  http_response_code(400);
+  die("Missing parameter: newValue");
+}
+$newValue = $request['newValue'];
 
 // read user from LDAP
 $ldapconn = ldap_bind_session();
@@ -22,31 +32,14 @@ $user = User::readUser($ldapconn, $dn);
 $retval = array();
 
 // check which field should be changed
-if (!empty($request['newMail'])) {
-  $newMail = $request['newMail'];
-  if ($user->changeMail($newMail) === true) {
-    // success
-    http_response_code(200);
-  } else {
-    http_response_code(500);
-    $retval["message"] = "Could not write change to LDAP directory";
-  }
-} elseif (!empty($request['newDisplayName'])) {
-  $newName = $request['newDisplayName'];
-  if ($user->changeDisplayName($newName) === true) {
-    // success
-    http_response_code(200);
-  } else {
-    http_response_code(500);
-    $retval["message"] = "Could not write change to LDAP directory";
-  }
+if ($user->changeField($field, $newValue) === true) {
+  // success
+  http_response_code(200);
 } else {
-  http_response_code(400);
-  $retval["message"] = "Got no parameter to change";
+  http_response_code(500);
+  $retval["message"] = "Could not write change to LDAP directory";
 }
-
-$retval["mail"] = $user->mail;
-$retval["displayName"] = $user->displayName;
+$retval["val"] = $user->$field;
 
 ldap_close($ldapconn);
 echo json_encode($retval);

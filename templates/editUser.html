@@ -14,10 +14,10 @@
       <td>{{user.cn}}</td>
     </tr>
     <tr>
-      <th>Name:</th>
+      <th>angezeigter Name:</th>
       <td ng-if="editable">
         <usradm-edit-text usradm-field="user.displayName"
-            onbeforesave="editUserService.updateDisplayName(data, form, user)">
+            onbeforesave="editUserService.updateDetail('displayName', data, form, user)">
         </usradm-edit-text>
       </td>
       <td ng-if="!editable">
@@ -25,10 +25,32 @@
       </td>
     </tr>
     <tr>
+      <th>Vorname:</th>
+      <td ng-if="editable">
+        <usradm-edit-text usradm-field="user.givenName"
+            onbeforesave="editUserService.updateDetail('givenName', data, form, user)">
+        </usradm-edit-text>
+      </td>
+      <td ng-if="!editable">
+        {{user.givenName}}
+      </td>
+    </tr>
+    <tr>
+      <th>Nachname:</th>
+      <td ng-if="editable">
+        <usradm-edit-text usradm-field="user.sn"
+            onbeforesave="editUserService.updateDetail('sn', data, form, user)">
+        </usradm-edit-text>
+      </td>
+      <td ng-if="!editable">
+        {{user.sn}}
+      </td>
+    </tr>
+    <tr>
       <th>E-Mail:</th>
       <td ng-if="editable">
         <usradm-edit-text usradm-field="user.mail"
-            onbeforesave="editUserService.updateMail(data, form, user)">
+            onbeforesave="editUserService.updateDetail('mail', data, form, user)">
         </usradm-edit-text>
       </td>
       <td ng-if="!editable">
