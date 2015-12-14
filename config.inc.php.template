@@ -17,6 +17,8 @@ define('MAIL_SENDER', 'webteam@example.com');
 define('MAIL_SUBJECT', 'Your account für example.com');
 define('MAIL_TEMPLATE', 'mail-templates/mail-newuser.tpl');
 
-
+//will be added to the username at login if there is no '=' present
+define('LOGIN_DN_PREFIX', 'cn=');
+define('LOGIN_DN_SUFFIX', ','.USER_DN);
 
 ?>

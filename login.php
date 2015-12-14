@@ -8,6 +8,10 @@ session_start();
 if (isset($_POST['signIn'])) {
   // Form was submitted
   $ldapDn = $_POST['inputDn'];
+  
+  //prefix and suffix can be added in config.inc.php
+  if (strpos($ldapDn,"=")!==false) $ldapDn = LOGIN_DN_PREFIX.$ldapDn.LOGIN_DN_SUFFIX;
+  
   $password = $_POST['inputPassword'];
 
   // Test bind to LDAP server
