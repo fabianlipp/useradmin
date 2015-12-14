@@ -10,7 +10,7 @@ if (isset($_POST['signIn'])) {
   $ldapDn = $_POST['inputDn'];
   
   //prefix and suffix can be added in config.inc.php
-  if (strpos($ldapDn,"=")!==false) $ldapDn = LOGIN_DN_PREFIX.$ldapDn.LOGIN_DN_SUFFIX;
+  if (strpos($ldapDn,"=")===false) $ldapDn = LOGIN_DN_PREFIX.$ldapDn.LOGIN_DN_SUFFIX;
   
   $password = $_POST['inputPassword'];
 
