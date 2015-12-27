@@ -21,7 +21,11 @@ if (isset($_POST['signIn'])) {
     $user = User::readUser($ldapconn, $ldapDn);
     $_SESSION['ldapDn'] = $ldapDn;
     $_SESSION['password'] = $password;
-    $_SESSION['displayName'] = $user->displayName;
+    if ($user) {
+      $_SESSION['displayName'] = $user->displayName;
+    } else {
+      $_SESSION['displayName'] = "";
+    }
     session_write_close();
     ldap_close($ldapconn);
     header('Location: index.php');
