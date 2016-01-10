@@ -23,8 +23,10 @@ if (isset($_POST['signIn'])) {
     $_SESSION['password'] = $password;
     if ($user) {
       $_SESSION['displayName'] = $user->displayName;
+      $_SESSION['givenName'] = $user->givenName;
     } else {
       $_SESSION['displayName'] = "";
+      $_SESSION['givenName'] = "";
     }
     session_write_close();
     ldap_close($ldapconn);

@@ -160,7 +160,7 @@ define('USE_ANGULAR', true);
       $mail_template = file_get_contents(BASE_PATH . MAIL_TEMPLATE);
       $mailSettings = array(
         'sender' => MAIL_SENDER,
-        'sendername' => $_SESSION['displayName'],
+        'sendername' => $_SESSION['givenName'],
         'subject' => MAIL_SUBJECT,
         'template' => $mail_template);
       echo json_encode($mailSettings, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
