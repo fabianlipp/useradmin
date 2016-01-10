@@ -523,4 +523,40 @@
         });
     };
   });
+
+
+
+  useradminApp.directive('usradmAlertContainer', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/alertContainer.html',
+      scope: {
+        alerts: '=alerts'
+      }
+    };
+  });
+
+
+
+  useradminApp.directive('usradmUserlistSearch', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/userlistSearch.html',
+      scope: {
+        list: '=list'
+      }
+    };
+  });
+
+
+
+  useradminApp.directive('usradmUserlistHeader', function() {
+    return {
+      restrict: 'A',
+      templateUrl: 'templates/userlistHeader.html',
+      scope: {
+        list: '=list'
+      }
+    };
+  });
 })();

@@ -20,63 +20,21 @@ define('USE_ANGULAR', true);
 
     <div class="container" ng-controller="UserlistController as list">
       <!-- show alerts -->
-      <div id="alert-container" class="container">
-        <div class="col-xs-3"></div>
-        <div class="col-xs-6">
-          <uib-alert ng-repeat="alert in list.alerts.alertList"
-              type="{{alert.type}}"
-              close="alert.close()"
-              dismiss-on-timeout="{{alert.dismiss}}">
-            {{alert.msg}}
-          </uib-alert>
-        </div>
-        <div class="col-xs-3"></div>
-      </div>
+      <usradm-alert-container alerts="list.alerts">
+      </usradm-alert-container>
 
       <h1>User anzeigen</h1>
 
-      <form>
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-            <input type="text" class="form-control"
-                placeholder="Suchen" ng-model="list.searchText">
-          </div>
-        </div>
-      </form>
+      <usradm-userlist-search list="list">
+      </usradm-userlist-search>
 
       <table class="table table-hover sortable">
         <!-- Titelzeile der Tabelle mit Sortiermöglichkeiten -->
-        <tr>
-          <th ng-click="list.sortClick('cn')">
-            cn
-            <span ng-show="list.sortField === 'cn'"
-                class="fa fa-caret-down"
-                ng-class="{'fa-caret-down': !list.sortReverse,
-                  'fa-caret-up': list.sortReverse}">
-            </span>
-          </th>
-          <th ng-click="list.sortClick('displayName')">
-            Name
-            <span ng-show="list.sortField === 'displayName'"
-                class="fa fa-caret-down"
-                ng-class="{'fa-caret-down': !list.sortReverse,
-                  'fa-caret-up': list.sortReverse}">
-            </span>
-          </th>
-          <th ng-click="list.sortClick('mail')">
-            E-Mail
-            <span ng-show="list.sortField === 'mail'"
-                class="fa fa-caret-down"
-                ng-class="{'fa-caret-down': !list.sortReverse,
-                  'fa-caret-up': list.sortReverse}">
-            </span>
-          </th>
-        </tr>
+        <tr usradm-userlist-header list="list"></tr>
 
         <!-- Tabelleneintrag für Benutzer -->
         <tr ng-repeat-start="user in list.userData
-              | orderBy:list.sortType:list.sortReverse
+              | orderBy:list.sortField:list.sortReverse
               | filter:list.searchText"
             ng-if="!user.expanded"
             ng-click="list.expandClick(user)">

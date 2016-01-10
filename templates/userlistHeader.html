@@ -1,0 +1,24 @@
+<th ng-click="list.sortClick('cn')">
+  cn
+  <span ng-show="list.sortField === 'cn'"
+      class="fa fa-caret-down"
+      ng-class="{'fa-caret-down': !list.sortReverse,
+        'fa-caret-up': list.sortReverse}">
+  </span>
+</th>
+<th ng-click="list.sortClick('displayName')">
+  Name
+  <span ng-show="list.sortField === 'displayName'"
+      class="fa fa-caret-down"
+      ng-class="{'fa-caret-down': !list.sortReverse,
+        'fa-caret-up': list.sortReverse}">
+  </span>
+</th>
+<th ng-click="list.sortClick('mail')">
+  E-Mail
+  <span ng-show="list.sortField === 'mail'"
+      class="fa fa-caret-down"
+      ng-class="{'fa-caret-down': !list.sortReverse,
+        'fa-caret-up': list.sortReverse}">
+  </span>
+</th>
