@@ -384,6 +384,11 @@
     this.mailfailure = false;
 
 
+    this.suggestUsername = function() {
+      var cnMixedCase = this.userform.givenName + this.userform.sn;
+      this.userform.cn = cnMixedCase.toLowerCase();
+    };
+
     this.completeStep1 = function() {
       var that = this;
       $http.post('ajax/addUser.json.php',
