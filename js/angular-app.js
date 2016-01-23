@@ -35,6 +35,7 @@
     this.searchText = '';
 
     this.pwChangeUser = false;
+    this.deleteSelectedUser = false;
 
     this.userData = JSON.parse(document.getElementById('jsonUsers').textContent);
     this.pwd1 = '';
@@ -47,6 +48,8 @@
       user.loading = false;
       user.pwChanged = false;
       user.pwChanging = false;
+      user.userDeleting = false;
+      user.index = i;
     }
 
     this.sortClick = function(field) {
@@ -126,6 +129,38 @@
               {type: 'danger',
                 msg: 'Benutzerpasswort für ' + user.cn
                     + ' konnte nicht geändert werden:'
+                    + response.data.detail});
+          });
+    };
+
+    this.showDeleteUser = function(user) {
+      this.deleteSelectedUser = user;
+      angular.element('#userDeleteModal').modal('show');
+    };
+
+    this.deleteUser = function() {
+      var that = this;
+      var user = this.deleteSelectedUser;
+      user.userDeleting = true;
+      angular.element('#userDeleteModal').modal('hide');
+      $http.post('ajax/deleteUser.json.php',
+          {'dn': user.dn})
+          .then(function(response) {
+            // success
+            user.userDeleting = false;
+            delete that.userData[user.index];
+            that.alerts.push(
+              {type: 'success',
+                msg: 'Benutzer ' + user.cn
+                    + ' gelöscht.',
+              dismiss: 5000});
+          }, function(response) {
+            // error
+            user.userDeleting = false;
+            that.alerts.push(
+              {type: 'danger',
+                msg: 'Benutzer ' + user.cn
+                    + ' konnte nicht gelöscht werden:'
                     + response.data.detail});
           });
     };

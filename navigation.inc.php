@@ -32,12 +32,13 @@ function classIfActive($requestUri) {
           <ul class="nav navbar-nav">
             <li class="<?php classIfActive("index.php"); ?>"><a href="index.php">Home</a></li>
             <li class="<?php classIfActive("gruppen.php"); ?>"><a href="gruppen.php">Gruppen</a></li>
-            <li class="dropdown <?php classIfActive(array("addUser.php", "userlist.php", "changePassword.php")); ?>">
+            <li class="dropdown <?php classIfActive(array("addUser.php", "userlist.php", "changePassword.php", "deleteUser.php")); ?>">
               <a data-toggle="dropdown" class="dropdown-toggle" href="#">User<b class="caret"></b></a>
               <ul role="menu" class="dropdown-menu">
                 <li class="<?php classIfActive("addUser.php"); ?>"><a href="addUser.php">User anlegen</a></li>
                 <li class="<?php classIfActive("userlist.php"); ?>"><a href="userlist.php">User bearbeiten</a></li>
                 <li class="<?php classIfActive("changePassword.php"); ?>"><a href="changePassword.php">Passwort ändern</a></li>
+                <li class="<?php classIfActive("deleteUser.php"); ?>"><a href="deleteUser.php">User löschen</a></li>
                 <!--<li class="divider"></li>-->
               </ul>
             </li>

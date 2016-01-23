@@ -150,6 +150,16 @@ class User {
       return true;
     }
   }
+
+
+
+  public function deleteFromDirectory($ldapconn) {
+    if (ldap_delete($this->ldapconn, $this->dn) === false) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 
