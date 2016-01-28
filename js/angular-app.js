@@ -420,8 +420,13 @@
 
 
     this.suggestUsername = function() {
-      var cnMixedCase = this.userform.givenName + this.userform.sn;
-      this.userform.cn = cnMixedCase.toLowerCase();
+      var suggestedCN = this.userform.givenName + this.userform.sn;
+      suggestedCN = suggestedCN.toLowerCase();
+      suggestedCN = suggestedCN.replace(/\u00e4/g, "ae");
+      suggestedCN = suggestedCN.replace(/\u00f6/g, "oe");
+      suggestedCN = suggestedCN.replace(/\u00fc/g, "ue");
+      suggestedCN = suggestedCN.replace(/\u00df/g, "ss");
+      this.userform.cn = suggestedCN;
     };
 
     this.completeStep1 = function() {
