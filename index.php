@@ -1,27 +1,26 @@
 <?php
 require_once('config.inc.php');
 require_once(BASE_PATH . 'ldap.inc.php');
+require_once(BASE_PATH . 'classes/user.inc.php');
+require_once(BASE_PATH . 'classes/group.inc.php');
 session_start();
 
 $ldapconn = ldap_bind_session();
-
-$sr = ldap_search($ldapconn, "dc=dpsg-wuerzburg,dc=de", "(objectclass=*)");
-$res_count = ldap_count_entries($ldapconn, $sr);
-$entries = ldap_get_entries($ldapconn, $sr);
+$users = User::readUsers($ldapconn);
+$groupOus = GroupOu::readGroupOus($ldapconn);
 
 ldap_close($ldapconn);
+
+$groupCount = array_sum(array_map(function($groupOu) { return count($groupOu->groups); }, $groupOus));
 
 ?>
 <?php include('html_head.inc.php'); ?>
 <?php include('navigation.inc.php'); ?>
 
     <div class="container">
-      <h1>My First Bootstrap Page</h1>
-      <p>Eingeloggt als <?php echo $_SESSION['ldapDn'] ?>.</p> 
-
-      <p>Ergebnis der Suche: <?php echo($sr); ?></p>
-      <p>Anzahl Einträge: <?php echo($res_count); ?></p>
-      <p><pre><?php print_r($entries); ?></pre></p>
+      <h1>Startseite</h1>
+      <p>Anzahl User: <?php echo(count($users)); ?></p>
+      <p>Anzahl Gruppen: <?php echo($groupCount); ?></p>
     </div>
 
 <?php include('html_bottom.inc.php'); ?>
