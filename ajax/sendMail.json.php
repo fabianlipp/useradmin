@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . '/../config.inc.php');
 require_once 'Mail.php';
+require_once "Mail/mime.php";
 
 require_once(BASE_PATH . 'ldap.inc.php');
 session_start();
