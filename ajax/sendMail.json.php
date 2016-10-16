@@ -13,6 +13,8 @@ $mailform = $request['mailform'];
 
 $mailer = Mail::factory('mail');
 $headers = array(
+  'Charset' => 'UTF-8',
+  'Content-Type' => 'text/plain; charset="UTF-8"',
   'From' => $mailform->sender,
   'To' => $mailform->recipient,
   'Subject' => $mailform->subject);
