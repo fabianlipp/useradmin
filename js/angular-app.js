@@ -427,6 +427,7 @@
       suggestedCN = suggestedCN.replace(/\u00f6/g, "oe");
       suggestedCN = suggestedCN.replace(/\u00fc/g, "ue");
       suggestedCN = suggestedCN.replace(/\u00df/g, "ss");
+      suggestedCN = suggestedCN.replace(/-/g, "");
       this.userform.cn = suggestedCN;
     };
 
