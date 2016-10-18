@@ -134,7 +134,7 @@
     };
 
     this.showDeleteUser = function(user) {
-	  this.loadDetail(user);
+      this.loadDetail(user);
       this.deleteSelectedUser = user;
       angular.element('#userDeleteModal').modal('show');
     };
