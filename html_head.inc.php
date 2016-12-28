@@ -11,20 +11,20 @@ require_once('config.inc.php');
   <title><?php echo PAGETITLE;?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo LIBS_URL ?>bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo LIBS_URL ?>bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="<?php echo LIBS_URL ?>font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/useradmin.css">
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/markup.min.js"></script>
+    <script src="<?php echo LIBS_URL ?>jquery/js/jquery.min.js"></script>
+    <script src="<?php echo LIBS_URL ?>bootstrap/js/bootstrap.min.js"></script>
+    <script src="<?php echo LIBS_URL ?>markup.js/js/markup.min.js"></script>
 <?php if (defined('USE_ANGULAR')) { ?>
-    <script src="js/angular.min.js"></script>
-    <script src="js/ui-bootstrap-tpls.min.js"></script>
+    <script src="<?php echo LIBS_URL ?>angular/js/angular.min.js"></script>
+    <script src="<?php echo LIBS_URL ?>angular-bootstrap/js/ui-bootstrap-tpls.min.js"></script>
     <script src="js/angular-app.js"></script>
-    <script src="js/angular-animate.min.js"></script>
-    <link href="css/xeditable.css" rel="stylesheet">
-    <script src="js/xeditable.min.js"></script>
+    <script src="<?php echo LIBS_URL ?>angular-animate/js/angular-animate.min.js"></script>
+    <link href="<?php echo LIBS_URL ?>angular-xeditable/css/xeditable.min.css" rel="stylesheet">
+    <script src="<?php echo LIBS_URL ?>angular-xeditable/js/xeditable.min.js"></script>
 <?php } ?>
 <?php if (isset($filespecific_js)) { echo $filespecific_js; } ?>
   </head>

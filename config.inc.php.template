@@ -17,8 +17,11 @@ define('MAIL_SENDER', 'webteam@example.com');
 define('MAIL_SUBJECT', 'Your account für example.com');
 define('MAIL_TEMPLATE', 'mail-templates/mail-newuser.tpl');
 
-//will be added to the username at login if there is no '=' present
+// will be added to the username at login if there is no '=' present
 define('LOGIN_DN_PREFIX', 'cn=');
 define('LOGIN_DN_SUFFIX', ','.USER_DN);
+
+// define the location of the used libraries (see html_head.inc.php)
+define('LIBS_URL', "");
 
 ?>
