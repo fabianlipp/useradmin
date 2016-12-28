@@ -71,7 +71,8 @@
       user.loading = true;
       $http.get('ajax/getUserDetails.json.php',
           {params: {dn: user.dn}})
-          .success(function(data) {
+          .then(function onSuccess(response) {
+        data = response.data;
         user.groups = data.groups;
         user.sn = data.sn;
         user.givenName = data.givenName;

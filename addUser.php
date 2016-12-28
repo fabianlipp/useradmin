@@ -18,18 +18,8 @@ define('USE_ANGULAR', true);
 
     <div class="container" ng-controller="AddUserController as adduser">
       <!-- show alerts -->
-      <div id="alert-container" class="container">
-        <div class="col-xs-3"></div>
-        <div class="col-xs-6">
-          <uib-alert ng-repeat="alert in adduser.alerts.alertList"
-              type="{{alert.type}}"
-              close="alert.close()"
-              dismiss-on-timeout="{{alert.dismiss}}">
-            {{alert.msg}}
-          </uib-alert>
-        </div>
-        <div class="col-xs-3"></div>
-      </div>
+      <usradm-alert-container alerts="adduser.alerts">
+      </usradm-alert-container>
 
       <h1>User anlegen</h1>
 
