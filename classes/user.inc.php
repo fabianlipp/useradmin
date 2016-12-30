@@ -108,12 +108,22 @@ class User {
 
 
   public function changePassword($newPassword) {
+    $entry = array();
+
     $salt = openssl_random_pseudo_bytes(12);
     $encoded_newPassword = "{SSHA}"
         . base64_encode(hash('sha1', $newPassword . $salt, true)
         . $salt);
-    $entry = array();
     $entry["userPassword"] = $encoded_newPassword;
+
+    // Convert the password from UTF8 to UTF16 (little endian)
+    $pwUtf16=iconv('UTF-8', 'UTF-16LE', $newPassword);
+    $md4Hash=hash('md4', $pwUtf16);
+    // Make it uppercase, not necessary, but it's common to do so with NTLM
+    // hashes
+    $ntlmHash=strtoupper($md4Hash);
+    $entry["sambaNTPassword"] = $ntlmHash;
+
     if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {
@@ -143,7 +153,7 @@ class User {
     $entry["sn"] = $this->sn;
     $entry["givenName"] = $this->givenName;
     $entry["displayName"] = $this->displayName;
-    $entry["objectClass"] = "inetOrgPerson";
+    $entry["objectClass"] = OBJECTCLASS;
     if (ldap_add($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {

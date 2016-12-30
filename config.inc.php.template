@@ -11,6 +11,9 @@ define('GROUP_DN', 'ou=Groups,' . BASE_DN);
 define('USER_DN', 'ou=People,' . BASE_DN);
 define('DUMMY_USER_DN', 'cn=dummy,dc=example,dc=com');
 
+// LDAP objectclass assigned to new users
+define('OBJECTCLASS', 'inetOrgPerson');
+
 define('PAGETITLE', 'example.com User Admin');
 
 define('MAIL_SENDER', 'webteam@example.com');
