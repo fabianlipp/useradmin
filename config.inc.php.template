@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
 define('BASE_PATH', '/srv/www/htdocs/useradmin/');
+define('BASE_IMPRESSUM_LINK', 'http://www.example.com/site.html');
 
 define('LDAP_SERVER', 'ldaps://example.com/');
 define('BASE_DN', 'dc=example,dc=com');
