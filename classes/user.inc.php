@@ -97,7 +97,7 @@ class User {
   public function changeField($field, $newValue) {
     $entry = array();
     $entry[$field] = $newValue;
-    if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
+    if (@ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {
       $this->$field = $newValue;
@@ -124,7 +124,7 @@ class User {
     $ntlmHash=strtoupper($md4Hash);
     $entry["sambaNTPassword"] = $ntlmHash;
 
-    if (ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
+    if (@ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {
       return true;
@@ -154,7 +154,7 @@ class User {
     $entry["givenName"] = $this->givenName;
     $entry["displayName"] = $this->displayName;
     $entry["objectClass"] = OBJECTCLASS;
-    if (ldap_add($this->ldapconn, $this->dn, $entry) === false) {
+    if (@ldap_add($this->ldapconn, $this->dn, $entry) === false) {
       return false;
     } else {
       return true;
@@ -164,7 +164,7 @@ class User {
 
 
   public function deleteFromDirectory($ldapconn) {
-    if (ldap_delete($this->ldapconn, $this->dn) === false) {
+    if (@ldap_delete($this->ldapconn, $this->dn) === false) {
       return false;
     } else {
       return true;
