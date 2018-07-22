@@ -399,6 +399,8 @@
     }
 
     this.step = 1;
+    this.moveToRight = false;
+
     this.userform = {
       "cn": "",
       "mail": "",
@@ -453,7 +455,7 @@
             that.user.groups.map(function(item) {
               that.user.groupDns[item.dn] = item;
             });
-            that.step = 2;
+            that.gotoStep(2);
           }, function(response) {
             // error
             var responsemsg;
@@ -471,7 +473,7 @@
     };
 
     this.completeStep2 = function() {
-      this.step = 3;
+      this.gotoStep(3);
     };
 
     this.completeStep3 = function() {
@@ -484,7 +486,7 @@
       };
       var template = this.mailSettings.templates[this.mailtemplate].template;
       f.mailbody = Mark.up(template, context);
-      this.step = 4;
+      this.gotoStep(4);
     };
 
     this.sendMail = function() {
@@ -505,8 +507,22 @@
     };
 
     this.stepBack = function() {
-      this.step--;
+      this.gotoStep(this.step - 1);
     };
+
+    this.gotoStep = function(newstep) {
+      // Need to set class moveToRight manually to the currently visible step,
+      // which is then hidden
+      var el = document.getElementById('step' + this.step);
+      if (newstep > this.step) {
+        el.classList.remove('moveToRight');
+        this.moveToRight = false;
+      } else {
+        el.classList.add('moveToRight');
+        this.moveToRight = true;
+      }
+      this.step = newstep;
+    }
   });
 
 

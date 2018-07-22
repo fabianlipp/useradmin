@@ -24,7 +24,9 @@ define('USE_ANGULAR', true);
       <h1>User anlegen</h1>
 
       <!-- Step 1: User anlegen -->
-      <div id="step1" ng-if="adduser.step === 1">
+      <div class="ngStepAnimated" id="step1"
+          ng-if="adduser.step === 1"
+          ng-class="{'moveToRight' : adduser.moveToRight}">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <label class="control-label col-sm-2" for="pwd">Vorname:</label>
@@ -74,7 +76,9 @@ define('USE_ANGULAR', true);
       </div>
 
       <!-- Step 2: Gruppen zuordnen -->
-      <div id="step2" ng-if="adduser.user && adduser.step === 2">
+      <div class="ngStepAnimated" id="step2"
+          ng-if="adduser.user && adduser.step === 2"
+          ng-class="{'moveToRight' : adduser.moveToRight}">
         <usradm-edit-user user="adduser.user" editable="true">
         </usradm-edit-user>
         <button class="btn btn-primary pull-right"
@@ -89,7 +93,9 @@ define('USE_ANGULAR', true);
       </usradm-group-add-modal>
 
       <!-- Step 3: Mail-Template auswählen -->
-      <div id="step3" ng-if="adduser.user && adduser.step === 3">
+      <div class="ngStepAnimated" id="step3"
+          ng-if="adduser.user && adduser.step === 3"
+          ng-class="{'moveToRight' : adduser.moveToRight}">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <label class="control-label col-sm-2">E-Mail-Vorlage:</label>
@@ -121,7 +127,9 @@ define('USE_ANGULAR', true);
       </div>
 
       <!-- Step 4: Mail an neuen User -->
-      <div id="step4" ng-if="adduser.user && adduser.step === 4">
+      <div class="ngStepAnimated" id="step4"
+          ng-if="adduser.user && adduser.step === 4"
+          ng-class="{'moveToRight' : adduser.moveToRight}">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <label class="control-label col-sm-2" for="sender">Absender:</label>

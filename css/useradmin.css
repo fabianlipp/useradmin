@@ -1,6 +1,9 @@
 body {
   padding-top: 60px;
   padding-bottom: 40px;
+  /* To avoid a horizontal scrollbar when the page enters/leaves the view
+   * during animation */
+  overflow-x: hidden;
 /*  background-color: #eee;*/
 }
 
@@ -89,14 +92,8 @@ div#alert-container {
 
 /* basic styling for entering and leaving */
 /* left and right added to ensure full width */
-#step1.ng-enter,
-#step2.ng-enter,
-#step3.ng-enter,
-#step4.ng-enter,
-#step1.ng-leave,
-#step2.ng-leave,
-#step3.ng-leave,
-#step4.ng-leave {
+.ngStepAnimated.ng-enter,
+.ngStepAnimated.ng-leave {
   position:absolute;
   left:30px;
   right:30px;
@@ -106,28 +103,31 @@ div#alert-container {
 }
 
 /* enter animation */
-#step1.ng-enter,
-#step2.ng-enter,
-#step3.ng-enter,
-#step4.ng-enter {
+.ngStepAnimated.ng-enter {
     -webkit-animation:slideInRight 1.0s both ease;
     -moz-animation:slideInRight 1.0s both ease;
     animation:slideInRight 1.0s both ease;
 }
+.ngStepAnimated.moveToRight.ng-enter {
+    -webkit-animation:slideInLeft 1.0s both ease;
+    -moz-animation:slideInLeft 1.0s both ease;
+    animation:slideInLeft 1.0s both ease;
+}
 
 /* leave animation */
-#step1.ng-leave,
-#step2.ng-leave,
-#step3.ng-leave,
-#step4.ng-leave {
+.ngStepAnimated.ng-leave {
     -webkit-animation:slideOutLeft 1.0s both ease;
     -moz-animation:slideOutLeft 1.0s both ease;
     animation:slideOutLeft 1.0s both ease;
 }
+.ngStepAnimated.moveToRight.ng-leave {
+    -webkit-animation:slideOutRight 1.0s both ease;
+    -moz-animation:slideOutRight 1.0s both ease;
+    animation:slideOutRight 1.0s both ease;
+}
 
 /* ANIMATIONS
 ============================================================================= */
-/* slide out to the left */
 @keyframes slideOutLeft {
     to      { transform: translateX(-200%); }
 }
@@ -137,8 +137,16 @@ div#alert-container {
 @-webkit-keyframes slideOutLeft {
     to      { -webkit-transform: translateX(-200%); }
 }
+@keyframes slideOutRight {
+    to      { transform: translateX(+200%); }
+}
+@-moz-keyframes slideOutRight {
+    to      { -moz-transform: translateX(+200%); }
+}
+@-webkit-keyframes slideOutRight {
+    to      { -webkit-transform: translateX(+200%); }
+}
 
-/* slide in from the right */
 @keyframes slideInRight {
     from    { transform:translateX(200%); }
     to      { transform: translateX(0); }
@@ -149,6 +157,18 @@ div#alert-container {
 }
 @-webkit-keyframes slideInRight {
     from    { -webkit-transform:translateX(200%); }
+    to      { -webkit-transform: translateX(0); }
+}
+@keyframes slideInLeft {
+    from    { transform:translateX(-200%); }
+    to      { transform: translateX(0); }
+}
+@-moz-keyframes slideInLeft {
+    from    { -moz-transform:translateX(-200%); }
+    to      { -moz-transform: translateX(0); }
+}
+@-webkit-keyframes slideInLeft {
+    from    { -webkit-transform:translateX(-200%); }
     to      { -webkit-transform: translateX(0); }
 }
 
