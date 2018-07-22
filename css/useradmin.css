@@ -92,9 +92,11 @@ div#alert-container {
 #step1.ng-enter,
 #step2.ng-enter,
 #step3.ng-enter,
+#step4.ng-enter,
 #step1.ng-leave,
 #step2.ng-leave,
-#step3.ng-leave {
+#step3.ng-leave,
+#step4.ng-leave {
   position:absolute;
   left:30px;
   right:30px;
@@ -106,7 +108,8 @@ div#alert-container {
 /* enter animation */
 #step1.ng-enter,
 #step2.ng-enter,
-#step3.ng-enter {
+#step3.ng-enter,
+#step4.ng-enter {
     -webkit-animation:slideInRight 1.0s both ease;
     -moz-animation:slideInRight 1.0s both ease;
     animation:slideInRight 1.0s both ease;
@@ -115,7 +118,8 @@ div#alert-container {
 /* leave animation */
 #step1.ng-leave,
 #step2.ng-leave,
-#step3.ng-leave {
+#step3.ng-leave,
+#step4.ng-leave {
     -webkit-animation:slideOutLeft 1.0s both ease;
     -moz-animation:slideOutLeft 1.0s both ease;
     animation:slideOutLeft 1.0s both ease;

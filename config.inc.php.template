@@ -18,8 +18,9 @@ define('OBJECTCLASS', 'inetOrgPerson');
 define('PAGETITLE', 'example.com User Admin');
 
 define('MAIL_SENDER', 'webteam@example.com');
-define('MAIL_SUBJECT', 'Your account für example.com');
-define('MAIL_TEMPLATE', 'mail-templates/mail-newuser.tpl');
+define('MAIL_SUBJECT', 'Your account for example.com');
+const MAIL_TEMPLATES = array('Default' => 'mail-templates/mail-newuser.tpl',
+  'Umstellung' => 'mail-templates/mail-newuser.umstellung.tpl');
 
 // will be added to the username at login if there is no '=' present
 define('LOGIN_DN_PREFIX', 'cn=');

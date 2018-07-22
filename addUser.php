@@ -88,8 +88,40 @@ define('USE_ANGULAR', true);
           group-data="adduser.groupEditServ.groupData">
       </usradm-group-add-modal>
 
-      <!-- Step 3: Mail an neuen User -->
+      <!-- Step 3: Mail-Template auswählen -->
       <div id="step3" ng-if="adduser.user && adduser.step === 3">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="control-label col-sm-2">E-Mail-Vorlage:</label>
+            <div class="col-sm-10">
+              <div ng-repeat="(index, template) in adduser.mailSettings.templates"
+                  class="radio">
+                <label>
+                  <input type="radio" value="{{index}}" ng-model="adduser.mailtemplate" name="mailtemplate">
+                  {{template.name}}
+                </label>
+              </div>
+              <!--<input type="text" class="form-control" id="givenName"
+                  ng-model="adduser.userform.givenName" />-->
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-primary"
+                  ng-click="adduser.stepBack()">
+                Zurück
+              </button>
+              <button class="btn btn-primary"
+                  ng-click="adduser.completeStep3()">
+                Weiter
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 4: Mail an neuen User -->
+      <div id="step4" ng-if="adduser.user && adduser.step === 4">
         <form class="form-horizontal" role="form">
           <div class="form-group">
             <label class="control-label col-sm-2" for="sender">Absender:</label>
@@ -122,6 +154,10 @@ define('USE_ANGULAR', true);
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               <button class="btn btn-primary"
+                  ng-click="adduser.stepBack()">
+                Zurück
+              </button>
+              <button class="btn btn-primary"
                   ng-click="adduser.sendMail()"
                   ng-disabled="adduser.mailsending || adduser.mailsuccess">
                 Mail absenden
@@ -147,12 +183,16 @@ define('USE_ANGULAR', true);
     </script>
     <script type="application/json" json-data id="mailSettings">
 <?php
-      $mail_template = file_get_contents(BASE_PATH . MAIL_TEMPLATE);
+      $mail_templates = array();
+      foreach (MAIL_TEMPLATES as $name => $template) {
+        $mail_templates[] = array('name' => $name,
+          'template' => file_get_contents(BASE_PATH . $template));
+      }
       $mailSettings = array(
         'sender' => MAIL_SENDER,
         'sendername' => $_SESSION['givenName'],
         'subject' => MAIL_SUBJECT,
-        'template' => $mail_template);
+        'templates' => $mail_templates);
       echo json_encode($mailSettings, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
 ?>
     </script>

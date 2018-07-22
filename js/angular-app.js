@@ -409,6 +409,8 @@
     this.user = null;
     this.userpassword = null;
 
+    this.mailtemplate = "0";
+
     this.mailform = {
       "sender": this.mailSettings.sender,
       "recipient": "",
@@ -469,6 +471,10 @@
     };
 
     this.completeStep2 = function() {
+      this.step = 3;
+    };
+
+    this.completeStep3 = function() {
       var f = this.mailform;
       f.recipient = this.user.mail;
       var context = {
@@ -476,9 +482,9 @@
         sendername: this.mailSettings.sendername,
         userpassword: this.userpassword
       };
-      f.mailbody = Mark.up(this.mailSettings.template, context);
-      console.log(f.mailbody);
-      this.step = 3;
+      var template = this.mailSettings.templates[this.mailtemplate].template;
+      f.mailbody = Mark.up(template, context);
+      this.step = 4;
     };
 
     this.sendMail = function() {
@@ -496,7 +502,10 @@
           that.mailfailure = true;
           that.mailsending = false;
         });
+    };
 
+    this.stepBack = function() {
+      this.step--;
     };
   });
 
