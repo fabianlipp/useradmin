@@ -194,8 +194,8 @@ define('USE_ANGULAR', true);
       $mail_templates = array();
       foreach (MAIL_TEMPLATES['addUser'] as $template) {
         $mail_templates[] = array(
-		  'name' => $template['name'],
-		  'subject' => $template['subject'],
+        'name' => $template['name'],
+        'subject' => $template['subject'],
           'template' => file_get_contents(BASE_PATH . $template['file']));
       }
       $mailSettings = array(
