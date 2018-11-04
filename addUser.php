@@ -192,14 +192,15 @@ define('USE_ANGULAR', true);
     <script type="application/json" json-data id="mailSettings">
 <?php
       $mail_templates = array();
-      foreach (MAIL_TEMPLATES as $name => $template) {
-        $mail_templates[] = array('name' => $name,
-          'template' => file_get_contents(BASE_PATH . $template));
+      foreach (MAIL_TEMPLATES['addUser'] as $template) {
+        $mail_templates[] = array(
+          'name' => (isset($template['name'])?$template['name']:basename($template['file'])),
+          'subject' => $template['subject'],
+          'template' => file_get_contents(BASE_PATH . $template['file']));
       }
       $mailSettings = array(
         'sender' => MAIL_SENDER,
         'sendername' => $_SESSION['givenName'],
-        'subject' => MAIL_SUBJECT,
         'templates' => $mail_templates);
       echo json_encode($mailSettings, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
 ?>
