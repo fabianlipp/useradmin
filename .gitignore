@@ -1,6 +1,2 @@
 config.inc.php
-css/bootstrap.min.css
-font-awesome/
-js/angular.min.js
-js/bootstrap.min.js
-js/jquery.min.js
+vendor/

@@ -38,6 +38,6 @@ define('LOGIN_DN_PREFIX', 'cn=');
 define('LOGIN_DN_SUFFIX', ','.USER_DN);
 
 // define the location of the used libraries (see html_head.inc.php)
-define('LIBS_URL', "");
+define('LIBS_URL', "vendor/");
 
 ?>
