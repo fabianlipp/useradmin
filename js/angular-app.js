@@ -416,7 +416,7 @@
     this.mailform = {
       "sender": this.mailSettings.sender,
       "recipient": "",
-      "subject": this.mailSettings.subject,
+      "subject": "",
       "mailbody": ""
     };
 
@@ -479,6 +479,7 @@
     this.completeStep3 = function() {
       var f = this.mailform;
       f.recipient = this.user.mail;
+      f.subject = this.mailSettings.templates[this.mailtemplate].subject;
       var context = {
         user: this.user,
         sendername: this.mailSettings.sendername,
