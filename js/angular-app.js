@@ -528,6 +528,115 @@
 
 
 
+  useradminApp.controller('ChangePasswordController',
+      function($http, alertsService) {
+    this.alerts = alertsService;
+
+    var mailSettingsEl = document.getElementById('mailSettings');
+    if (mailSettingsEl) {
+      this.mailSettings = JSON.parse(mailSettingsEl.textContent);
+    }
+
+    this.reset = function() {
+      this.step = 0;
+      this.moveToRight = false;
+
+      this.user = null;
+      this.userpassword = null;
+
+      this.mailtemplate = "0";
+
+      this.mailform = {
+        "sender": this.mailSettings.sender,
+        "recipient": "",
+        "subject": "",
+        "mailbody": ""
+      };
+
+      this.mailsending = false;
+      this.mailsuccess = false;
+      this.mailfailure = false;
+    }
+    this.reset();
+
+    this.setRandomPassword = function(user) {
+      this.user = user;
+      var that = this;
+      $http.post('ajax/changePassword.json.php',{
+             'dn': this.user.dn,
+             'randomPassword': true})
+        .then(function(response) {
+            // success
+            that.userpassword = response.data.password;
+            that.gotoStep(1);
+          }, function(response) {
+            // error
+            var responsemsg;
+            if (typeof response.data == 'object') {
+              responsemsg = response.data.detail;
+            } else {
+              responsemsg = response.data;
+            }
+            that.alerts.push(
+              {type: 'danger',
+                msg: 'Passwort konnte nicht geändert werden: '
+                    + responsemsg});
+          });
+    };
+
+    this.completeStep1 = function() {
+      var f = this.mailform;
+      f.recipient = this.user.mail;
+      f.subject = this.mailSettings.templates[this.mailtemplate].subject;
+      var context = {
+        user: this.user,
+        sendername: this.mailSettings.sendername,
+        userpassword: this.userpassword
+      };
+      var template = this.mailSettings.templates[this.mailtemplate].template;
+      f.mailbody = Mark.up(template, context);
+      this.gotoStep(2);
+    };
+
+    this.sendMail = function() {
+      this.mailsending = true;
+      this.mailsuccess = false;
+      this.mailfailure = false;
+      var that = this;
+      $http.post('ajax/sendMail.json.php',
+          {'mailform': this.mailform
+            })
+        .then(function(response) {
+          that.mailsuccess = true;
+          that.mailsending = false;
+          that.gotoStep(3);
+        }, function(response) {
+          that.mailfailure = true;
+          that.mailsending = false;
+        });
+    };
+
+    this.stepBack = function() {
+      this.gotoStep(this.step - 1);
+    };
+
+    this.gotoStep = function(newstep) {
+      // Need to set class moveToRight manually to the currently visible step,
+      // which is then hidden
+      var el = document.getElementById('step' + this.step);
+      if (newstep > this.step) {
+        el.classList.remove('moveToRight');
+        this.moveToRight = false;
+      } else {
+        el.classList.add('moveToRight');
+        this.moveToRight = true;
+      }
+      this.step = newstep;
+    }
+  });
+
+
+
   useradminApp.controller('SelfServiceController',
       function($http) {
 

@@ -30,6 +30,13 @@ const MAIL_TEMPLATES = array(
       'subject' => 'Your account for example.com',
       'file' => 'mail-templates/special-newuser.tpl'
     )
+  ),
+  'changePassword' => array(
+    array(
+      'name' => 'Default',
+      'subject' => 'Your new password for example.com',
+      'file' => 'mail-templates/mail-password.tpl'
+    )
   )
 );
 
