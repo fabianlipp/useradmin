@@ -138,7 +138,7 @@ class User {
       . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $randstring = '';
     for ($i = 0; $i < 15; $i++) {
-            $randstring .= $characters[rand(0, strlen($characters))];
+            $randstring .= $characters[rand(0, strlen($characters) - 1)];
     }
     return $randstring;
   }
