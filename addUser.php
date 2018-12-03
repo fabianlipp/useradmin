@@ -25,7 +25,7 @@ define('USE_ANGULAR', true);
 
       <!-- Step 1: User anlegen -->
       <div class="ngStepAnimated" id="step1"
-          ng-if="adduser.step === 1"
+          ng-if="adduser.step === 1 && !adduser.emailStepActive"
           ng-class="{'moveToRight' : adduser.moveToRight}">
         <form class="form-horizontal" role="form">
           <div class="form-group">
@@ -77,7 +77,7 @@ define('USE_ANGULAR', true);
 
       <!-- Step 2: Gruppen zuordnen -->
       <div class="ngStepAnimated" id="step2"
-          ng-if="adduser.user && adduser.step === 2"
+          ng-if="adduser.user && adduser.step === 2 && !adduser.emailStepActive"
           ng-class="{'moveToRight' : adduser.moveToRight}">
         <usradm-edit-user user="adduser.user" editable="true">
         </usradm-edit-user>
@@ -92,97 +92,12 @@ define('USE_ANGULAR', true);
           group-data="adduser.groupEditServ.groupData">
       </usradm-group-add-modal>
 
-      <!-- Step 3: Mail-Template auswählen -->
-      <div class="ngStepAnimated" id="step3"
-          ng-if="adduser.user && adduser.step === 3"
-          ng-class="{'moveToRight' : adduser.moveToRight}">
-        <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label class="control-label col-sm-2">E-Mail-Vorlage:</label>
-            <div class="col-sm-10">
-              <div ng-repeat="(index, template) in adduser.mailSettings.templates"
-                  class="radio">
-                <label>
-                  <input type="radio" value="{{index}}" ng-model="adduser.mailtemplate" name="mailtemplate">
-                  {{template.name}}
-                </label>
-              </div>
-              <!--<input type="text" class="form-control" id="givenName"
-                  ng-model="adduser.userform.givenName" />-->
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button class="btn btn-primary"
-                  ng-click="adduser.stepBack()">
-                Zurück
-              </button>
-              <button class="btn btn-primary"
-                  ng-click="adduser.completeStep3()">
-                Weiter
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Step 4: Mail an neuen User -->
-      <div class="ngStepAnimated" id="step4"
-          ng-if="adduser.user && adduser.step === 4"
-          ng-class="{'moveToRight' : adduser.moveToRight}">
-        <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="sender">Absender:</label>
-            <div class="col-sm-10">
-              <input type="email" class="form-control" id="sender"
-                  ng-model="adduser.mailform.sender" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="recipient">Empfänger:</label>
-            <div class="col-sm-10">
-              <input type="email" class="form-control" id="recipient"
-                  ng-model="adduser.mailform.recipient" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="subject">Betreff:</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="subject"
-                  ng-model="adduser.mailform.subject" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="mailbody">Text:</label>
-            <div class="col-sm-10">
-              <textarea class="form-control" id="mailbody" rows="20"
-                  ng-model="adduser.mailform.mailbody"></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button class="btn btn-primary"
-                  ng-click="adduser.stepBack()">
-                Zurück
-              </button>
-              <button class="btn btn-primary"
-                  ng-click="adduser.sendMail()"
-                  ng-disabled="adduser.mailsending || adduser.mailsuccess">
-                Mail absenden
-              </button>
-              <span class="fa fa-refresh"
-                  ng-show="adduser.mailsending"
-                  ng-class="{'fa-spin' :
-                      adduser.mailsending}"></span>
-              <span class="fa fa-check"
-                  ng-show="adduser.mailsuccess"></span>
-              <span class="fa fa-times"
-                  ng-show="adduser.mailfailure"></span>
-              </div>
-          </div>
-        </form>
-      </div>
-
+      <usradm-send-email
+        user="adduser.user"
+        userpassword="adduser.userpassword"
+        email-step-active="adduser.emailStepActive"
+        move-to-right="adduser.moveToRight">
+      </usradm-send-email>
     </div>
 
     <!-- data for the group list (is then parsed by AngularJS) -->

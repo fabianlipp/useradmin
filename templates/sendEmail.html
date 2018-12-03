@@ -1,0 +1,88 @@
+      <!-- Step 1: Mail-Template auswählen -->
+      <div class="ngStepAnimated" id="sendEmail-step1"
+          ng-if="sendEmail.user && sendEmail.step === 1 && sendEmail.emailStepActive"
+          ng-class="{'moveToRight' : sendEmail.moveToRight}">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="control-label col-sm-2">E-Mail-Vorlage:</label>
+            <div class="col-sm-10">
+              <div ng-repeat="(index, template) in sendEmail.mailSettings.templates"
+                  class="radio">
+                <label>
+                  <input type="radio" value="{{index}}" ng-model="sendEmail.mailtemplate" name="mailtemplate">
+                  {{template.name}}
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-primary"
+                  ng-click="sendEmail.stepBack()">
+                Zurück
+              </button>
+              <button class="btn btn-primary"
+                  ng-click="sendEmail.completeStep1()">
+                Weiter
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 2: Mail an neuen User -->
+      <div class="ngStepAnimated" id="sendEmail-step2"
+          ng-if="sendEmail.user && sendEmail.step === 2 && sendEmail.emailStepActive"
+          ng-class="{'moveToRight' : sendEmail.moveToRight}">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="sender">Absender:</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="sender"
+                  ng-model="sendEmail.mailform.sender" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="recipient">Empfänger:</label>
+            <div class="col-sm-10">
+              <input type="email" class="form-control" id="recipient"
+                  ng-model="sendEmail.mailform.recipient" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="subject">Betreff:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="subject"
+                  ng-model="sendEmail.mailform.subject" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="mailbody">Text:</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="mailbody" rows="20"
+                  ng-model="sendEmail.mailform.mailbody"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-primary"
+                  ng-click="sendEmail.stepBack()">
+                Zurück
+              </button>
+              <button class="btn btn-primary"
+                  ng-click="sendEmail.sendMail()"
+                  ng-disabled="sendEmail.mailsending || sendEmail.mailsuccess">
+                Mail absenden
+              </button>
+              <span class="fa fa-refresh"
+                  ng-show="sendEmail.mailsending"
+                  ng-class="{'fa-spin' :
+                      sendEmail.mailsending}"></span>
+              <span class="fa fa-check"
+                  ng-show="sendEmail.mailsuccess"></span>
+              <span class="fa fa-times"
+                  ng-show="sendEmail.mailfailure"></span>
+              </div>
+          </div>
+        </form>
+      </div>

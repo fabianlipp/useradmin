@@ -393,11 +393,6 @@
     this.alerts = alertsService;
     this.groupEditServ = groupEditService;
 
-    var mailSettingsEl = document.getElementById('mailSettings');
-    if (mailSettingsEl) {
-      this.mailSettings = JSON.parse(mailSettingsEl.textContent);
-    }
-
     this.step = 1;
     this.moveToRight = false;
 
@@ -411,19 +406,7 @@
     this.user = null;
     this.userpassword = null;
 
-    this.mailtemplate = "0";
-
-    this.mailform = {
-      "sender": this.mailSettings.sender,
-      "recipient": "",
-      "subject": "",
-      "mailbody": ""
-    };
-
-    this.mailsending = false;
-    this.mailsuccess = false;
-    this.mailfailure = false;
-
+    this.emailStepActive = false;
 
     this.suggestUsername = function() {
       var suggestedCN = this.userform.givenName + this.userform.sn;
@@ -473,10 +456,58 @@
     };
 
     this.completeStep2 = function() {
+      this.emailStepActive = true;
       this.gotoStep(3);
     };
 
-    this.completeStep3 = function() {
+    this.stepBack = function() {
+      this.gotoStep(this.step - 1);
+    };
+
+    this.gotoStep = function(newstep) {
+      // Need to set class moveToRight manually to the currently visible step,
+      // which is then hidden
+      var el = document.getElementById('step' + this.step);
+      if (newstep > this.step) {
+        el.classList.remove('moveToRight');
+        this.moveToRight = false;
+      } else {
+        el.classList.add('moveToRight');
+        this.moveToRight = true;
+      }
+      if (newstep <= 2) {
+        this.step = newstep;
+      }
+    }
+  });
+
+
+
+  useradminApp.controller('SendEmailController',
+      function($http, alertsService, groupEditService) {
+    this.alerts = alertsService;
+
+    var mailSettingsEl = document.getElementById('mailSettings');
+    if (mailSettingsEl) {
+      this.mailSettings = JSON.parse(mailSettingsEl.textContent);
+    }
+
+    this.step = 1;
+
+    this.mailtemplate = "0";
+
+    this.mailform = {
+      "sender": this.mailSettings.sender,
+      "recipient": "",
+      "subject": "",
+      "mailbody": ""
+    };
+
+    this.mailsending = false;
+    this.mailsuccess = false;
+    this.mailfailure = false;
+
+    this.completeStep1 = function() {
       var f = this.mailform;
       f.recipient = this.user.mail;
       f.subject = this.mailSettings.templates[this.mailtemplate].subject;
@@ -487,7 +518,7 @@
       };
       var template = this.mailSettings.templates[this.mailtemplate].template;
       f.mailbody = Mark.up(template, context);
-      this.gotoStep(4);
+      this.gotoStep(2);
     };
 
     this.sendMail = function() {
@@ -508,13 +539,17 @@
     };
 
     this.stepBack = function() {
-      this.gotoStep(this.step - 1);
+      if (this.step == 1) {
+        this.emailStepActive = false;
+      } else {
+        this.gotoStep(this.step - 1);
+      }
     };
 
     this.gotoStep = function(newstep) {
       // Need to set class moveToRight manually to the currently visible step,
       // which is then hidden
-      var el = document.getElementById('step' + this.step);
+      var el = document.getElementById('sendEmail-step' + this.step);
       if (newstep > this.step) {
         el.classList.remove('moveToRight');
         this.moveToRight = false;
@@ -524,6 +559,23 @@
       }
       this.step = newstep;
     }
+  });
+
+
+
+  useradminApp.directive('usradmSendEmail', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'templates/sendEmail.html',
+      controller: 'SendEmailController',
+      controllerAs: 'sendEmail',
+      bindToController: {
+        user: '=',
+        userpassword: '=',
+        emailStepActive: '=',
+        moveToRight: '='
+      }
+    };
   });
 
 
