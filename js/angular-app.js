@@ -484,7 +484,7 @@
 
 
   useradminApp.controller('SendEmailController',
-      function($http, alertsService, groupEditService) {
+      function($http, alertsService) {
     this.alerts = alertsService;
 
     var mailSettingsEl = document.getElementById('mailSettings');
