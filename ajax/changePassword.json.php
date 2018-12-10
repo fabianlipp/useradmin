@@ -21,6 +21,12 @@ $user = User::readUser($ldapconn, $dn);
 
 $retval = array();
 
+// check if a random password is whished
+if (isset($request['randomPassword']) && $request['randomPassword'] === true) {
+  $request['newPassword'] = User::generateRandomPassword();
+  $retval["password"] = $request['newPassword'];
+}
+
 // check which field should be changed
 if (!empty($request['newPassword'])) {
   $newPass = $request['newPassword'];

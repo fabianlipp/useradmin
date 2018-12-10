@@ -61,7 +61,10 @@ EOT;
       </table>
 
       <!-- Modal-Dialog zum Passwort ändern -->
-      <div id="pwChangeModal" class="modal fade" role="dialog">
+      <div id="pwChangeModal"
+          class="modal fade"
+          role="dialog"
+          ng-controller="ChangePasswordController as changePassword">
         <div class="modal-dialog">
           <div class="modal-content">
             <form class="form-horizontal" role="form">
@@ -71,6 +74,11 @@ EOT;
                 <h4 class="modal-title">Passwort ändern</h4>
               </div>
               <div class="modal-body">
+
+                <!-- Step 0: set password -->
+                <div class="ngStepAnimated" id="step0"
+                    ng-if="changePassword.step === 0"
+                    ng-class="{'moveToRight' : changePassword.moveToRight}">
                   <div class="form-group">
                     <label class="control-label col-sm-4">
                       User:
@@ -109,17 +117,140 @@ EOT;
                       </span>
                     </div>
                   </div>
+                </div>
+
+                <!-- Step 1: choose template -->
+                <div class="ngStepAnimated" id="step1"
+                    ng-if="changePassword.step === 1"
+                    ng-class="{'moveToRight' : changePassword.moveToRight}">
+                  <form class="form-horizontal"
+                      role="form">
+                    <div class="form-group">
+                      <label class="control-label col-sm-2">E-Mail-Vorlage:</label>
+                      <div class="col-sm-10">
+                        <div ng-repeat="(index, template) in changePassword.mailSettings.templates"
+                          class="radio">
+                          <label>
+                            <input type="radio"
+                                value="{{index}}"
+                                ng-model="changePassword.mailtemplate"
+                                name="mailtemplate">
+                              {{template.name}}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-primary"
+                            ng-click="changePassword.stepBack()">
+                          Abbrechen
+                        </button>
+                        <button class="btn btn-primary"
+                            ng-click="changePassword.completeStep1()">
+                          Weiter
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Step 2: send mail -->
+                <div class="ngStepAnimated" id="step2"
+                    ng-if="changePassword.step === 2"
+                    ng-class="{'moveToRight' : changePassword.moveToRight}">
+                  <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                      <label class="control-label col-sm-2" for="sender">Absender:</label>
+                      <div class="col-sm-10">
+                        <input type="email"
+                            class="form-control"
+                            id="sender"
+                            ng-model="changePassword.mailform.sender" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-sm-2" for="recipient">Empfänger:</label>
+                      <div class="col-sm-10">
+                        <input type="email"
+                            class="form-control"
+                            id="recipient"
+                            ng-model="changePassword.mailform.recipient" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-sm-2" for="subject">Betreff:</label>
+                      <div class="col-sm-10">
+                        <input type="text"
+                            class="form-control"
+                            id="subject"
+                            ng-model="changePassword.mailform.subject" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-sm-2" for="mailbody">Text:</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" id="mailbody" rows="20"
+                            ng-model="changePassword.mailform.mailbody"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-primary"
+                            ng-click="changePassword.stepBack()">
+                          Zurück
+                        </button>
+                        <button class="btn btn-primary"
+                            ng-click="changePassword.sendMail()"
+                            ng-disabled="changePassword.mailsending || changePassword.mailsuccess">
+                          Mail absenden
+                        </button>
+                        <span class="fa fa-refresh"
+                            ng-show="changePassword.mailsending"
+                            ng-class="{'fa-spin' : changePassword.mailsending}">
+                        </span>
+                        <span class="fa fa-check"
+                            ng-show="changePassword.mailsuccess"></span>
+                        <span class="fa fa-times"
+                            ng-show="changePassword.mailfailure"></span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Step 3: ready -->
+                <div class="ngStepAnimated" id="step3"
+                    ng-if="changePassword.step === 3"
+                    ng-class="{'moveToRight' : changePassword.moveToRight}">
+                  <div class="alert alert-success">Mail erfolgreich versandt</div>
+                </div>
+
               </div> <!-- modal-body -->
               <div class="modal-footer">
+                <button type="button"
+                    class="btn btn-info pull-left btn-sm"
+                    ng-show="changePassword.step === 0"
+                    ng-click="changePassword.setRandomPassword(list.pwChangeUser)">
+                  Zufällig Generieren &amp; Mailen
+                </button>
                 <input type="submit"
                     class="btn btn-primary pull-right btn-sm rbtnMargin"
+                    ng-show="changePassword.step === 0"
                     ng-click="list.changePassword()"
                     ng-disabled="!list.pwd1 || !list.isSamePw()"
                     value="Ändern" />
                 <button type="button"
                     class="btn pull-right btn-sm"
+                    ng-show="changePassword.step === 0"
                     data-dismiss="modal">
                   Abbrechen
+                </button>
+                <button type="button"
+                    class="btn pull-right btn-sm"
+                    ng-show="changePassword.step !== 0"
+                    ng-click="changePassword.reset()"
+                    data-dismiss="modal">
+                  Fertig
                 </button>
               </div> <!-- modal-footer -->
             </form>
@@ -132,6 +263,22 @@ EOT;
     <!-- data for the user list (is then parsed by AngularJS) -->
     <script type="application/json" json-data id="jsonUsers">
       <?php echo json_encode($users, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT); ?>
+    </script>
+	<script type="application/json" json-data id="mailSettings">
+<?php
+      $mail_templates = array();
+      foreach (MAIL_TEMPLATES['changePassword'] as $template) {
+        $mail_templates[] = array(
+          'name' => (isset($template['name'])?$template['name']:basename($template['file'])),
+          'subject' => $template['subject'],
+          'template' => file_get_contents(BASE_PATH . $template['file']));
+      }
+      $mailSettings = array(
+        'sender' => MAIL_SENDER,
+        'sendername' => $_SESSION['givenName'],
+        'templates' => $mail_templates);
+      echo json_encode($mailSettings, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
+?>
     </script>
 
 <?php include('html_bottom.inc.php'); ?>
