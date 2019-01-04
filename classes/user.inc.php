@@ -116,13 +116,15 @@ class User {
         . $salt);
     $entry["userPassword"] = $encoded_newPassword;
 
-    // Convert the password from UTF8 to UTF16 (little endian)
-    $pwUtf16=iconv('UTF-8', 'UTF-16LE', $newPassword);
-    $md4Hash=hash('md4', $pwUtf16);
-    // Make it uppercase, not necessary, but it's common to do so with NTLM
-    // hashes
-    $ntlmHash=strtoupper($md4Hash);
-    $entry["sambaNTPassword"] = $ntlmHash;
+    if (STORE_NTLM_HASH) {
+      // Convert the password from UTF8 to UTF16 (little endian)
+      $pwUtf16=iconv('UTF-8', 'UTF-16LE', $newPassword);
+      $md4Hash=hash('md4', $pwUtf16);
+      // Make it uppercase, not necessary, but it's common to do so with NTLM
+      // hashes
+      $ntlmHash=strtoupper($md4Hash);
+      $entry["sambaNTPassword"] = $ntlmHash;
+    }
 
     if (@ldap_modify($this->ldapconn, $this->dn, $entry) === false) {
       return false;

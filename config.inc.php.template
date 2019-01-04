@@ -14,6 +14,7 @@ define('DUMMY_USER_DN', 'cn=dummy,dc=example,dc=com');
 
 // LDAP objectclass assigned to new users
 define('OBJECTCLASS', 'inetOrgPerson');
+define('STORE_NTLM_HASH', false);
 
 define('PAGETITLE', 'example.com User Admin');
 
