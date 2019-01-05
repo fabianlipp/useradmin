@@ -73,15 +73,9 @@
           {params: {dn: user.dn}})
           .then(function onSuccess(response) {
         data = response.data;
-        user.groups = data.groups;
-        user.sn = data.sn;
-        user.givenName = data.givenName;
+        updateUserDetails(user, data);
         user.detailsLoaded = true;
         user.loading = false;
-        user.groupDns = {};
-        user.groups.map(function(item) {
-          user.groupDns[item.dn] = item;
-        });
       });
     };
 
@@ -197,6 +191,7 @@
       templateUrl: 'templates/groupAddList.html',
       scope: {
         groupData: '=groupData',
+        metagroupData: '=metagroupData'
       },
       link: function(scope, elemet, attrs) {
         scope.editUserService = editUserService;
@@ -211,25 +206,32 @@
     alerts = alertsService;
     var serv = {};
 
+    var jsonMetagroupEl = document.getElementById('jsonMetagroups');
+    if (jsonMetagroupEl) {
+      serv.metagroupData = JSON.parse(jsonMetagroupEl.textContent);
+    }
     var jsonGroupEl = document.getElementById('jsonGroups');
     if (jsonGroupEl) {
       serv.groupData = JSON.parse(jsonGroupEl.textContent);
     }
 
-    serv.addGroupToUser = function(user, group, groupAdding) {
+    serv.addGroupToUser = function(user, group, isMetagroup, groupAdding) {
+      var messageString = isMetagroup ? 'Metagruppe' : 'Gruppe';
       groupAdding[user.dn] = true;
-      angular.element('#groupAddModal').modal('hide');
+      //angular.element('#groupAddModal').modal('hide'); // TODO: duplicated
       $http.post('ajax/addUserGroup.json.php',
           {'userdn': user.dn,
-            'groupdn': group.dn})
+            'groupdn': group.dn,
+            'isMetagroup': isMetagroup})
           .then(function(response) {
             // success
-            user.groups.push(group);
-            user.groupDns[group.dn] = group;
+            if (response.data.user) {
+              updateUserDetails(user, response.data.user);
+            }
             groupAdding[user.dn] = false;
             alerts.push(
               {type: 'success',
-                msg: 'Benutzer ' + user.cn + ' zu Gruppe '
+                msg: 'Benutzer ' + user.cn + ' zu ' + messageString + ' '
                     + group.cn + ' hinzugefügt',
               dismiss: 5000});
           }, function(response) {
@@ -237,7 +239,8 @@
             groupAdding[user.dn] = false;
             alerts.push(
               {type: 'danger',
-                msg: 'Konnte Benutzer ' + user.cn + ' nicht zu Gruppe '
+                msg: 'Konnte Benutzer ' + user.cn + ' nicht zu '
+                    + messageString + ' '
                     + group.cn + ' hinzufügen: ' + response.data.detail});
           });
     };
@@ -341,8 +344,8 @@
       return userAddGroup.groupDns.hasOwnProperty(group.dn);
     };
 
-    serv.addGroupToUser = function(group) {
-      groupEditService.addGroupToUser(userAddGroup, group, groupAdding);
+    serv.addGroupToUser = function(group, isMetagroup) {
+      groupEditService.addGroupToUser(userAddGroup, group, isMetagroup, groupAdding);
       angular.element('#groupAddModal').modal('hide');
     };
 
@@ -374,7 +377,8 @@
       restrict: 'E',
       templateUrl: 'templates/groupAddModal.html',
       scope: {
-        groupData: '=groupData'
+        groupData: '=groupData',
+        metagroupData: '=metagroupData'
       }
     };
   });
@@ -382,6 +386,8 @@
 
 
   useradminApp.controller('GrouplistController', function() {
+    this.metagroupData = JSON.parse(
+        document.getElementById('jsonMetagroups').textContent);
     this.groupData = JSON.parse(
         document.getElementById('jsonGroupOus').textContent);
   });
@@ -681,3 +687,15 @@
     };
   });
 })();
+
+
+
+function updateUserDetails(user, data) {
+  user.groups = data.groups;
+  user.sn = data.sn;
+  user.givenName = data.givenName;
+  user.groupDns = {};
+  user.groups.map(function(item) {
+    user.groupDns[item.dn] = item;
+  });
+}

@@ -10,7 +10,7 @@ class User {
   var $displayName;
   var $sn;
   var $givenName;
-  private $group_dns;
+  var $group_dns;
   var $groups = null;
 
   private $ldapconn;
