@@ -2,6 +2,7 @@
 require_once('config.inc.php');
 
 require_once(BASE_PATH . 'ldap.inc.php');
+require_once(BASE_PATH . 'helpers.inc.php');
 require_once(BASE_PATH . 'classes/user.inc.php');
 require_once(BASE_PATH . 'classes/group.inc.php');
 session_start();
@@ -129,9 +130,6 @@ EOT;
 
     </div> <!-- container -->
 
-    <!-- data for the user list (is then parsed by AngularJS) -->
-    <script type="application/json" json-data id="jsonUsers">
-      <?php echo json_encode($users, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT); ?>
-    </script>
+    <?php echoJsonDataAsScript("jsonUsers", $users); ?>
 
 <?php include('html_bottom.inc.php'); ?>

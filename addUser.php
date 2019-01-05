@@ -2,6 +2,7 @@
 require_once('config.inc.php');
 
 require_once(BASE_PATH . 'ldap.inc.php');
+require_once(BASE_PATH . 'helpers.inc.php');
 require_once(BASE_PATH . 'classes/user.inc.php');
 require_once(BASE_PATH . 'classes/group.inc.php');
 session_start();
@@ -9,6 +10,18 @@ session_start();
 $ldapconn = ldap_bind_session();
 $groupOus = GroupOu::readGroupOus($ldapconn);
 ldap_close($ldapconn);
+
+$mail_templates = array();
+foreach (MAIL_TEMPLATES['addUser'] as $template) {
+  $mail_templates[] = array(
+    'name' => (isset($template['name'])?$template['name']:basename($template['file'])),
+    'subject' => $template['subject'],
+    'template' => file_get_contents(BASE_PATH . $template['file']));
+}
+$mailSettings = array(
+  'sender' => MAIL_SENDER,
+  'sendername' => $_SESSION['givenName'],
+  'templates' => $mail_templates);
 
 define('USE_ANGULAR', true);
 
@@ -100,26 +113,7 @@ define('USE_ANGULAR', true);
       </usradm-send-email>
     </div>
 
-    <!-- data for the group list (is then parsed by AngularJS) -->
-    <script type="application/json" json-data id="jsonGroups">
-      <?php echo json_encode($groupOus, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT); ?>
-    </script>
-    <script type="application/json" json-data id="mailSettings">
-<?php
-      $mail_templates = array();
-      foreach (MAIL_TEMPLATES['addUser'] as $template) {
-        $mail_templates[] = array(
-          'name' => (isset($template['name'])?$template['name']:basename($template['file'])),
-          'subject' => $template['subject'],
-          'template' => file_get_contents(BASE_PATH . $template['file']));
-      }
-      $mailSettings = array(
-        'sender' => MAIL_SENDER,
-        'sendername' => $_SESSION['givenName'],
-        'templates' => $mail_templates);
-      echo json_encode($mailSettings, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
-?>
-    </script>
-
+    <?php echoJsonDataAsScript("jsonGroups", $groupOus); ?>
+    <?php echoJsonDataAsScript("mailSettings", $mailSettings); ?>
 
 <?php include('html_bottom.inc.php'); ?>
