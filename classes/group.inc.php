@@ -48,7 +48,6 @@ class Group {
     if (isset($att['cn']) && $att['cn']['count'] == 1) {
       $newGroup->cn = $att['cn'][0];
     }
-    $vals = ldap_get_values($ldapconn, $entry, "description");
     if (isset($att['description']) && $att['description']['count'] == 1) {
       $newGroup->description = $att['description'][0];
     }

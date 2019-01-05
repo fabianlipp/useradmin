@@ -31,7 +31,6 @@ $user = User::readUser($ldapconn, $dn);
 
 $retval = array();
 
-// check which field should be changed
 if ($user->changeField($field, $newValue) === true) {
   // success
   http_response_code(200);

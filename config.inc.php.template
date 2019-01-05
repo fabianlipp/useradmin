@@ -9,8 +9,11 @@ define('BASE_IMPRESSUM_LINK', 'http://www.example.com/site.html');
 define('LDAP_SERVER', 'ldaps://example.com/');
 define('BASE_DN', 'dc=example,dc=com');
 define('GROUP_DN', 'ou=Groups,' . BASE_DN);
+define('METAGROUP_DN', 'ou=Metagroups,' . BASE_DN);
+// or to disable metagroups:
+// define('METAGROUP_DN', false);
 define('USER_DN', 'ou=People,' . BASE_DN);
-define('DUMMY_USER_DN', 'cn=dummy,dc=example,dc=com');
+define('DUMMY_USER_DN', 'cn=dummy,' . BASE_DN);
 
 // LDAP objectclass assigned to new users
 define('OBJECTCLASS', 'inetOrgPerson');
