@@ -1,8 +1,6 @@
 <?php
 
 require_once(__DIR__ . '/../config.inc.php');
-require_once(BASE_PATH . 'classes/user.inc.php'); // TODO: Needed?
-require_once(BASE_PATH . 'classes/group.inc.php');
 
 class Metagroup {
   var $dn;
@@ -53,7 +51,6 @@ class Metagroup {
     if (isset($att['cn']) && $att['cn']['count'] == 1) {
       $newMetagroup->cn = $att['cn'][0];
     }
-    $vals = ldap_get_values($ldapconn, $entry, "description"); // TODO: Needed? -> also in group.inc.php
     if (isset($att['description']) && $att['description']['count'] == 1) {
       $newMetagroup->description = $att['description'][0];
     }
@@ -69,29 +66,6 @@ class Metagroup {
 
     $newMetagroup->ldapconn = $ldapconn;
     return $newMetagroup;
-  }
-
-
-
-  public function loadUsers() {
-    $search = ldap_read($this->ldapconn, $this->dn, Group::FILTER_GROUPS,
-        array("member"));
-    if (ldap_count_entries($this->ldapconn, $search) > 0) {
-      $entry = ldap_first_entry($this->ldapconn, $search);
-
-      $att = ldap_get_attributes($this->ldapconn, $entry);
-      if (isset($att['member'])) {
-        $this->members = [];
-        for($i = 0; $i < $att['member']['count']; $i++) {
-          $dn = $att['member'][$i];
-          if ($dn != DUMMY_USER_DN) {
-            $this->members[] = User::readUser($this->ldapconn, $dn);
-          }
-        }
-      } else {
-        $this->members = [];
-      }
-    }
   }
 }
 
