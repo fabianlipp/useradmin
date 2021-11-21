@@ -384,6 +384,13 @@
   useradminApp.controller('GrouplistController', function() {
     this.groupData = JSON.parse(
         document.getElementById('jsonGroupOus').textContent);
+    // Don't show members of any group by default
+    for (let i = 0; i < this.groupData.length; i++) {
+      let groupOu = this.groupData[i];
+      for (let j = 0; j < groupOu.groups.length; j++) {
+        groupOu.groups[j].showMembers = false;
+      }
+    }
   });
 
 

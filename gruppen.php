@@ -54,7 +54,12 @@ define('USE_ANGULAR', true);
                 <p class="list-group-item-text">
                   {{group.description}}
                 </p>
-                <ul ng-if="group.members.length">
+                <p class="list-group-item-text small">
+                  <a ng-if="!group.showMembers" ng-click="group.showMembers = true">Mitglieder anzeigen</a>
+                  <a ng-if="group.showMembers" ng-click="group.showMembers = false">Mitglieder ausblenden</a>
+                </p>
+                <ul ng-if="group.showMembers">
+                  <li ng-if="!group.members.length">Keine Mitglieder in dieser Gruppe</li>
                   <li ng-repeat="user in group.members">
                     {{user.dn}}
                   </li>
