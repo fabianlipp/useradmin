@@ -11,13 +11,14 @@ $postdata = file_get_contents("php://input");
 $request = (array) json_decode($postdata);
 $mailform = $request['mailform'];
 
+$subject = mb_encode_mimeheader($mailform->subject, "UTF-8", "Q");
 $mailer = Mail::factory('mail');
 $headers = array(
   'Charset' => 'UTF-8',
   'Content-Type' => 'text/plain; charset="UTF-8"',
   'From' => $mailform->sender,
   'To' => $mailform->recipient,
-  'Subject' => $mailform->subject);
+  'Subject' => $subject);
 
 
 $retval = array();
