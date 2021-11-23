@@ -4,9 +4,11 @@ require_once('config.inc.php');
 require_once(BASE_PATH . 'ldap.inc.php');
 require_once(BASE_PATH . 'helpers.inc.php');
 require_once(BASE_PATH . 'classes/group.inc.php');
+require_once(BASE_PATH . 'classes/metagroup.inc.php');
 session_start();
 
 $ldapconn = ldap_bind_session();
+$metagroups = Metagroup::readMetagroups($ldapconn);
 $ous = GroupOu::readGroupOus($ldapconn);
 
 foreach ($ous as $ou) {
@@ -27,6 +29,34 @@ define('USE_ANGULAR', true);
       <h1>Gruppen anzeigen</h1>
 
       <div id="accordion" class="panel-group">
+        <div class="panel panel-default" ng-if="list.metagroupData.length">
+          <div data-toggle="collapse" href="#collapseMetagroups"
+              data-parent="#accordion"
+              class="panel-heading clickable">
+            <h4 class="panel-title">Metagroups</h4>
+          </div>
+          <div id="collapseMetagroups" class="panel-collapse collapse">
+            <ul class="list-group">
+              <li class="list-group-item clickable"
+                  ng-repeat="metagroup in list.metagroupData">
+                <h5 class="list-group-item-heading">
+                  {{metagroup.cn}}
+                  <span class="small">
+                    ({{metagroup.dn}})
+                  </span>
+                </h5>
+                <p class="list-group-item-text">
+                  {{metagroup.description}}
+                </p>
+                <ul ng-if="metagroup.members.length">
+                  <li ng-repeat="group in metagroup.members">
+                    {{group}}
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div> <!-- panel-collapse -->
+        </div>
         <div class="panel panel-default" ng-repeat="ou in list.groupData">
           <div data-toggle="collapse" href="#collapse{{ou.ou}}"
               data-parent="#accordion"
@@ -74,6 +104,7 @@ define('USE_ANGULAR', true);
       </div> <!-- panel-group -->
     </div>
 
+    <?php echoJsonDataAsScript("jsonMetagroups", $metagroups); ?>
     <?php echoJsonDataAsScript("jsonGroupOus", $ous); ?>
 
 <?php include('html_bottom.inc.php'); ?>

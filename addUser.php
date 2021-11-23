@@ -5,9 +5,11 @@ require_once(BASE_PATH . 'ldap.inc.php');
 require_once(BASE_PATH . 'helpers.inc.php');
 require_once(BASE_PATH . 'classes/user.inc.php');
 require_once(BASE_PATH . 'classes/group.inc.php');
+require_once(BASE_PATH . 'classes/metagroup.inc.php');
 session_start();
 
 $ldapconn = ldap_bind_session();
+$metagroups = Metagroup::readMetagroups($ldapconn);
 $groupOus = GroupOu::readGroupOus($ldapconn);
 ldap_close($ldapconn);
 
@@ -102,7 +104,8 @@ define('USE_ANGULAR', true);
 
       <!-- Modal-Dialog zur Gruppenauswahl zum Hinzufügen -->
       <usradm-group-add-modal
-          group-data="adduser.groupEditServ.groupData">
+          group-data="adduser.groupEditServ.groupData"
+          metagroup-data="adduser.groupEditServ.metagroupData">
       </usradm-group-add-modal>
 
       <usradm-send-email
@@ -113,6 +116,7 @@ define('USE_ANGULAR', true);
       </usradm-send-email>
     </div>
 
+    <?php echoJsonDataAsScript("jsonMetagroups", $metagroups); ?>
     <?php echoJsonDataAsScript("jsonGroups", $groupOus); ?>
     <?php echoJsonDataAsScript("mailSettings", $mailSettings); ?>
 
