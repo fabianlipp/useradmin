@@ -191,15 +191,25 @@
 
 
 
-  useradminApp.directive('usradmGroupAddListAccordion', function(editUserService) {
+  useradminApp.directive('usradmGroupAddListAccordion',
+      function(editUserService, filterFilter) {
     return {
       restrict: 'E',
       templateUrl: 'templates/groupAddList.html',
       scope: {
         groupData: '=groupData',
+        searchText: '=searchText',
       },
       link: function(scope, elemet, attrs) {
         scope.editUserService = editUserService;
+
+        scope.ouFilterPredicate = function(searchText) {
+          return function(ouItem) {
+            let filteredGroups = filterFilter(ouItem.groups, searchText);
+            let availableGroups = filteredGroups.filter(group => !editUserService.userHasGroup(group));
+            return (availableGroups.length > 0);
+          }
+        }
       }
     };
   });
@@ -369,13 +379,26 @@
 
 
 
-  useradminApp.directive('usradmGroupAddModal', function() {
+  useradminApp.directive('usradmGroupAddModal', function(filterFilter) {
     return {
       restrict: 'E',
       templateUrl: 'templates/groupAddModal.html',
       scope: {
         groupData: '=groupData'
-      }
+      },
+      controller: function() {
+        this.searchText = "";
+
+        this.changedSearch = function() {
+          let ouCount = filterFilter(this.groupData, this.searchText).length;
+          if (ouCount === 1) {
+            // Automatically open the only existing ou
+            $("#accordion>div>div.panel-collapse").collapse('toggle')
+          }
+        }
+      },
+      controllerAs: "groupAddModal",
+      bindToController: true,
     };
   });
 

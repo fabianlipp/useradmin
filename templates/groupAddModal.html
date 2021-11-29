@@ -8,8 +8,23 @@
         <h4 class="modal-title">Gruppe hinzufügen</h4>
       </div>
       <div class="modal-body">
+          <form>
+              <div class="form-group has-feedback">
+                  <div class="input-group">
+                      <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                      <input type="text" class="form-control"
+                             placeholder="Suchen" ng-model="groupAddModal.searchText"
+                             ng-change="groupAddModal.changedSearch()" />
+                      <span ng-if="groupAddModal.searchText"
+                            ng-click="groupAddModal.searchText = ''"
+                            class="glyphicon glyphicon-remove form-control-feedback"
+                            style="cursor: pointer; pointer-events: all;"
+                            uib-tooltip="clear"></span>
+                  </div>
+              </div>
+          </form>
         <usradm-group-add-list-accordion
-          group-data="groupData">
+          group-data="groupAddModal.groupData" search-text="groupAddModal.searchText">
         </usradm-group-add-list-accordion>
       </div> <!-- modal-body -->
       <div class="modal-footer">
