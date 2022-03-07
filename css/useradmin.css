@@ -83,6 +83,10 @@ div#alert-container {
   margin-left: 5px;
 }
 
+/* This is needed because otherwise the delete icon in textboxes is hidden while field has focus. */
+.has-feedback .form-control-feedback {
+  z-index: 3;
+}
 
 
 

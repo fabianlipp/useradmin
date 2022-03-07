@@ -1,9 +1,14 @@
 <form>
   <div class="form-group">
-    <div class="input-group">
+    <div class="input-group has-feedback">
       <div class="input-group-addon"><i class="fa fa-search"></i></div>
       <input type="text" class="form-control"
           placeholder="Suchen" ng-model="list.searchText">
+      <span ng-if="list.searchText"
+            ng-click="list.searchText = ''"
+            class="glyphicon glyphicon-remove form-control-feedback"
+            style="cursor: pointer; pointer-events: all;"
+            uib-tooltip="clear"></span>
     </div>
   </div>
 </form>

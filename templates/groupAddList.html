@@ -1,5 +1,5 @@
 <div id="accordion" class="panel-group">
-  <div class="panel panel-default" ng-repeat="ou in groupData">
+  <div class="panel panel-default" ng-repeat="ou in groupData | filter: ouFilterPredicate(searchText)">
     <div data-toggle="collapse" href="#collapse{{ou.ou}}"
         data-parent="#accordion"
         class="panel-heading clickable">
@@ -16,7 +16,7 @@
     <div id="collapse{{ou.ou}}" class="panel-collapse collapse">
       <ul class="list-group" ng-if="ou.groups.length">
         <li class="list-group-item clickable"
-            ng-repeat="group in ou.groups"
+            ng-repeat="group in ou.groups | filter: searchText"
             ng-show="!editUserService.userHasGroup(group)"
             ng-click="editUserService.addGroupToUser(group)">
           <h5 class="list-group-item-heading">
